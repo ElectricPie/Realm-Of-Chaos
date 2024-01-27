@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class REALMOFCHAOS_API APlayerCharacter : public ACharacter
 {
@@ -26,4 +29,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArm;
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* Camera;
 };
