@@ -10,7 +10,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class REALMOFCHAOS_API APlayerCharacter : public ACharacter
+class REALMOFCHAOS_API APlayerCharacter : public APawn
 {
 	GENERATED_BODY()
 
@@ -27,9 +27,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 private:
+	UPROPERTY(EditAnywhere, Category="Components")
+	UCapsuleComponent* Capsule;
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	USkeletalMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, Category="Components")
@@ -39,5 +43,8 @@ private:
 	float RotationOffset = 90.f;
 
 public:
-	void FaceDirection(FVector LookTarget);
+	UFUNCTION(Server, Unreliable)
+	void ServerUpdateRotation(FRotator NewRotation);
+	
+	void FaceDirection(const FVector LookTarget);
 };
