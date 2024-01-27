@@ -39,9 +39,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UCameraComponent* Camera;
 
-	UPROPERTY(EditDefaultsOnly, Category="Movement")
-	float RotationOffset = 90.f;
-
 public:
 	UFUNCTION(Server, Unreliable)
 	void ServerUpdateRotation(FRotator NewRotation);

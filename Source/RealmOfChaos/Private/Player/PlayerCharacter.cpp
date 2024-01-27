@@ -56,8 +56,7 @@ void APlayerCharacter::FaceDirection(const FVector LookTarget)
 {
 	// Get the direction the character should face accounting for the meshes rotational offset
 	FVector Direction = (LookTarget - GetActorLocation()).GetSafeNormal();
-	Direction = FRotator(0.f, RotationOffset, 0.f).RotateVector(Direction);
-
+	
 	// Prevent the character from looking up or down
 	Direction.Z = 0.f;
 
@@ -67,6 +66,6 @@ void APlayerCharacter::FaceDirection(const FVector LookTarget)
 	// Update the server
 	if (Controller && Controller->GetLocalRole() == ROLE_AutonomousProxy)
 	{
-		ServerUpdateRotation(GetActorRotation());
+		ServerUpdateRotation(NewRotation);
 	}
 }
