@@ -30,8 +30,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	USpringArmComponent* SpringArm;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	UCameraComponent* Camera;
+
+	UPROPERTY(EditDefaultsOnly, Category="Movement")
+	float RotationOffset = 90.f;
+
+public:
+	void FaceDirection(FVector LookTarget);
 };

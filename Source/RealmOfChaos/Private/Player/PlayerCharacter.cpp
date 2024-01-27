@@ -40,3 +40,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+void APlayerCharacter::FaceDirection(FVector LookTarget)
+{
+	if (USkeletalMeshComponent* MeshComponent = GetMesh())
+	{
+		// Get the direction the character should face accounting for the meshes rotational offset
+		FVector Direction = (LookTarget - GetActorLocation()).GetSafeNormal();
+		Direction = FRotator(0.f, RotationOffset, 0.f).RotateVector(Direction);
+
+		// Prevent the character from looking up or down
+		Direction.Z = 0.f;
+
+		MeshComponent->SetRelativeRotation(Direction.Rotation());
+	}
+}
+
