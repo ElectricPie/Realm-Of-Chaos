@@ -13,20 +13,16 @@ APlayerCharacter::APlayerCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision Capsule"));
-	RootComponent = Capsule;
-
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(RootComponent);
-	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetUsingAbsoluteRotation(true);
+	SpringArm->TargetArmLength = 1200.f;
+	SpringArm->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	SpringArm->bDoCollisionTest = false;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-	SpringArm->bInheritPitch = false;
-	SpringArm->bInheritYaw = false;
-	SpringArm->bInheritRoll = false;
+	Camera->bUsePawnControlRotation = false;
 }
 
 // Called when the game starts or when spawned
@@ -68,4 +64,11 @@ void APlayerCharacter::FaceDirection(const FVector LookTarget)
 	{
 		ServerUpdateRotation(NewRotation);
 	}
+}
+
+void APlayerCharacter::Move(FVector Direction)
+{
+	// Move the character in the direction of the input using the world space direction
+	AddMovementInput(FVector::ForwardVector, Direction.X);
+	AddMovementInput(FVector::RightVector, Direction.Y);
 }

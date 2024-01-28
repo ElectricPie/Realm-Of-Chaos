@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "InputActionValue.h"
 #include "TopDownPlayerController.generated.h"
 
+class UInputAction;
 class APlayerCharacter;
+class UInputMappingContext;
 
 /**
  * 
@@ -21,10 +24,18 @@ protected:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void SetupInputComponent() override;
+
 private:
-	UPROPERTY(EditAnywhere, Category="Input")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
+	UInputMappingContext* MappingContext;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	float RaycastLimit = 3000.f;
 
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;
+
+	void Move(const FInputActionValue& Value);
 };

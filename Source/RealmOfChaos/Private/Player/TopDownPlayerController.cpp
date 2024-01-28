@@ -3,6 +3,8 @@
 
 #include "Player/TopDownPlayerController.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Player/PlayerCharacter.h"
 
 void ATopDownPlayerController::BeginPlay()
@@ -12,6 +14,21 @@ void ATopDownPlayerController::BeginPlay()
 	bShowMouseCursor = true;
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
+
+	if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		InputSubsystem->AddMappingContext(MappingContext, 0);
+	}
+}
+
+void ATopDownPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::Move);
+	}
 }
 
 void ATopDownPlayerController::Tick(float DeltaSeconds)
@@ -42,4 +59,13 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 			PlayerCharacter->FaceDirection(HitResult.ImpactPoint);
 		}
 	}
+}
+
+void ATopDownPlayerController::Move(const FInputActionValue& Value)
+{
+	if (!PlayerCharacter) return;
+	
+	const FVector2d Dir = Value.Get<FVector2d>();
+	// Use normal to prevent diagonal movement being faster
+	PlayerCharacter->Move(FVector(Dir.X, Dir.Y, 0.f).GetSafeNormal());
 }

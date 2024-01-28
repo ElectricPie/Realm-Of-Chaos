@@ -10,13 +10,22 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class REALMOFCHAOS_API APlayerCharacter : public APawn
+class REALMOFCHAOS_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+
 
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
+	
+	UFUNCTION(Server, Unreliable)
+	void ServerUpdateRotation(FRotator NewRotation);
+	
+	void FaceDirection(const FVector LookTarget);
+
+	void Move(FVector Direction);
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,18 +39,8 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 private:
-	UPROPERTY(EditAnywhere, Category="Components")
-	UCapsuleComponent* Capsule;
-	UPROPERTY(VisibleAnywhere, Category="Components")
-	USkeletalMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UCameraComponent* Camera;
-
-public:
-	UFUNCTION(Server, Unreliable)
-	void ServerUpdateRotation(FRotator NewRotation);
-	
-	void FaceDirection(const FVector LookTarget);
 };
