@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "InputActionValue.h"
 #include "TopDownPlayerController.generated.h"
 
 class UInputAction;
 class APlayerCharacter;
 class UInputMappingContext;
+struct FInputActionValue;
 
 /**
  * 
@@ -38,4 +38,6 @@ private:
 	APlayerCharacter* PlayerCharacter;
 
 	void Move(const FInputActionValue& Value);
+	
+	void RotateToTarget(FVector TargetLocation);
 };

@@ -14,17 +14,10 @@ class REALMOFCHAOS_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-
-
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 	
-	UFUNCTION(Server, Unreliable)
-	void ServerUpdateRotation(FRotator NewRotation);
-	
-	void FaceDirection(const FVector LookTarget);
-
 	void Move(FVector Direction);
 
 protected:

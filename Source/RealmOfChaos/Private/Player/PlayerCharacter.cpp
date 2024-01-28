@@ -4,8 +4,8 @@
 #include "Player/PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "InputActionValue.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -41,29 +41,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void APlayerCharacter::ServerUpdateRotation_Implementation(FRotator NewRotation)
-{
-	SetActorRotation(NewRotation);
-}
-
-void APlayerCharacter::FaceDirection(const FVector LookTarget)
-{
-	// Get the direction the character should face accounting for the meshes rotational offset
-	FVector Direction = (LookTarget - GetActorLocation()).GetSafeNormal();
-	
-	// Prevent the character from looking up or down
-	Direction.Z = 0.f;
-
-	const FRotator NewRotation = Direction.Rotation();
-	SetActorRotation(NewRotation);
-
-	// Update the server
-	if (Controller && Controller->GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		ServerUpdateRotation(NewRotation);
-	}
 }
 
 void APlayerCharacter::Move(FVector Direction)

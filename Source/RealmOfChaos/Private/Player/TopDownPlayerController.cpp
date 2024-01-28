@@ -56,7 +56,7 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 		{
 			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 50.f, 8, FColor::Red);
 
-			PlayerCharacter->FaceDirection(HitResult.ImpactPoint);
+			RotateToTarget(HitResult.ImpactPoint);
 		}
 	}
 }
@@ -68,4 +68,17 @@ void ATopDownPlayerController::Move(const FInputActionValue& Value)
 	const FVector2d Dir = Value.Get<FVector2d>();
 	// Use normal to prevent diagonal movement being faster
 	PlayerCharacter->Move(FVector(Dir.X, Dir.Y, 0.f).GetSafeNormal());
+}
+
+void ATopDownPlayerController::RotateToTarget(FVector TargetLocation)
+{
+	if (IsValid(PlayerCharacter))
+	{
+		// Get the direction the character should face accounting for the meshes rotational offset
+		FVector Direction = (TargetLocation - PlayerCharacter->GetActorLocation()).GetSafeNormal();
+		// Prevent the character from looking up or down
+		Direction.Z = 0.f;
+
+		ClientSetRotation(Direction.Rotation());
+	}
 }
