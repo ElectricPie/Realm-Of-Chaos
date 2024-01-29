@@ -43,9 +43,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void APlayerCharacter::Move(FVector Direction)
+void APlayerCharacter::Move(const FVector Direction)
 {
 	// Move the character in the direction of the input using the world space direction
-	AddMovementInput(FVector::ForwardVector, Direction.X);
-	AddMovementInput(FVector::RightVector, Direction.Y);
+	AddMovementInput(FVector::ForwardVector, Direction.X * SpeedModifier);
+	AddMovementInput(FVector::RightVector, Direction.Y * SpeedModifier);
+	
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Red, FString::Printf(TEXT("Velocity: %f"), GetVelocity().Length()));
+	}
 }
