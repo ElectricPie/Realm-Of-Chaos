@@ -60,7 +60,7 @@ void APlayerCharacter::Move(const FVector Direction)
 bool APlayerCharacter::IsMovingForward() const
 {
 	const FVector ForwardVector = GetActorForwardVector();
-	const FVector Velocity = GetVelocity();
+	const FVector Velocity = GetVelocity().GetSafeNormal();
 
 	const float DotProduct = FVector::DotProduct(ForwardVector, Velocity);
 	return DotProduct > 0.f;

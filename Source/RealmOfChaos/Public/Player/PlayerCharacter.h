@@ -20,6 +20,7 @@ public:
 	
 	void Move(FVector Direction);
 
+	UFUNCTION(BlueprintCallable)
 	bool IsMovingForward() const;
 
 protected:
