@@ -63,5 +63,5 @@ bool APlayerCharacter::IsMovingForward() const
 	const FVector Velocity = GetVelocity().GetSafeNormal();
 
 	const float DotProduct = FVector::DotProduct(ForwardVector, Velocity);
-	return DotProduct > 0.f;
+	return DotProduct > BackwardsThreshold;
 }

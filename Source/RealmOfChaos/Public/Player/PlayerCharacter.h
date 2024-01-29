@@ -40,8 +40,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	UCameraComponent* Camera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="Adjusts how fast the character moves in any direction"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="Adjusts how fast the character moves in any direction"))
 	float SpeedModifier = 0.8f;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="Adjusts how fast the character moves when moving backwards"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="Adjusts how fast the character moves when moving backwards"))
 	float BackwardsSpeedModifier = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="How far from forward the character can move before they are considered to be moving backwards", ClampMin="-1.0", ClampMax="1.0", UIMin="-1.0", UIMax="1.0"))
+	float BackwardsThreshold = -0.5f;
 };
