@@ -20,6 +20,8 @@ public:
 	
 	void Move(FVector Direction);
 
+	bool IsMovingForward() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,6 +39,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	UCameraComponent* Camera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="Adjusts how fast the character moves in any direction"))
 	float SpeedModifier = 0.8f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="Adjusts how fast the character moves when moving backwards"))
+	float BackwardsSpeedModifier = 0.5f;
 };

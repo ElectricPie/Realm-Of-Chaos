@@ -45,12 +45,23 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Move(const FVector Direction)
 {
-	// Move the character in the direction of the input using the world space direction
-	AddMovementInput(FVector::ForwardVector, Direction.X * SpeedModifier);
-	AddMovementInput(FVector::RightVector, Direction.Y * SpeedModifier);
-	
-	if (GEngine)
+	// Reduce the players speed if they are moving backwards
+	float ForwardSpeedModifier = 1.f;
+	if (!IsMovingForward())
 	{
-		GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Red, FString::Printf(TEXT("Velocity: %f"), GetVelocity().Length()));
+		ForwardSpeedModifier = BackwardsSpeedModifier;
 	}
+	
+	// Move the character in the direction of the input using the world space direction
+	AddMovementInput(FVector::ForwardVector, Direction.X * SpeedModifier * ForwardSpeedModifier);
+	AddMovementInput(FVector::RightVector, Direction.Y * SpeedModifier * ForwardSpeedModifier);
+}
+
+bool APlayerCharacter::IsMovingForward() const
+{
+	const FVector ForwardVector = GetActorForwardVector();
+	const FVector Velocity = GetVelocity();
+
+	const float DotProduct = FVector::DotProduct(ForwardVector, Velocity);
+	return DotProduct > 0.f;
 }
