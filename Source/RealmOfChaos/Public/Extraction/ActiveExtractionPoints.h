@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Info.h"
 #include "ActiveExtractionPoints.generated.h"
 
 class AExtractionPoint;
@@ -11,10 +10,19 @@ class AExtractionPoint;
  * 
  */
 UCLASS(Blueprintable)
-class REALMOFCHAOS_API AActiveExtractionPoints : public AInfo
+class REALMOFCHAOS_API AActiveExtractionPoints : public AActor
 {
 	GENERATED_BODY()
 
+public:
+	/**
+	 * @brief Gets a array of Extraction Points which includes the guaranteed points and the ActiveRandomPoints amount
+	 * of the furthest points from the start point 
+	 * @param StartPoint The point to compare point distanced
+	 * @return An array of extraction points
+	 */
+	TArray<AExtractionPoint*> GetPointsByDistance(const FVector StartPoint) const;
+	
 private:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Extraction Points", meta=(AllowPrivateAccess="true", ToolTip="Extraction Points guarented to be accessable to all players"))
 	TArray<AExtractionPoint*> GuaranteedPoints;
