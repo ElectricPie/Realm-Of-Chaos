@@ -5,7 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "InputActionValue.h"
+#include "GameModes/ExtractionGameMode.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -29,6 +29,14 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		const AExtractionGameMode* ExtractionGameMode = Cast<AExtractionGameMode>(GetWorld()->GetAuthGameMode());
+
+		if (!IsValid(ExtractionGameMode)) return;
+		ExtractionGameMode->AuthGetExtractionPoints(this);
+	}
 }
 
 // Called every frame

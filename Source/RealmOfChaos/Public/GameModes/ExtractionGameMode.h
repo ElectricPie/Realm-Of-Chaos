@@ -15,12 +15,14 @@ class REALMOFCHAOS_API AExtractionGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
+public:
+	void AuthGetExtractionPoints(const APawn* PlayerPawn) const;
+	
 protected:
 	virtual void BeginPlay() override;
-	
-	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
 	UPROPERTY()
 	AActiveExtractionPoints* ExtractionPoints;
+
 };
