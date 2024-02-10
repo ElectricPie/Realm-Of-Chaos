@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TopDownPlayerController.generated.h"
 
+class AExtractionPoint;
 class UInputAction;
 class APlayerCharacter;
 class UInputMappingContext;
@@ -19,12 +20,16 @@ class REALMOFCHAOS_API ATopDownPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	void SetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints);
+	
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void SetupInputComponent() override;
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
@@ -36,8 +41,9 @@ private:
 
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;
+	UPROPERTY(VisibleAnywhere, Replicated)
+	TArray<const AExtractionPoint*> ExtractionPoints;
 
 	void Move(const FInputActionValue& Value);
-	
 	void RotateToTarget(FVector TargetLocation);
 };

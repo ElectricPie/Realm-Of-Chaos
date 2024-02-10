@@ -5,13 +5,22 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/PlayerCharacter.h"
+
+
+void ATopDownPlayerController::SetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Setting Extraction Points"));
+	ExtractionPoints = NewExtractionPoints;
+}
 
 void ATopDownPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	bShowMouseCursor = true;
+	bReplicates = true;
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
 
@@ -30,6 +39,14 @@ void ATopDownPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::Move);
 	}
 }
+
+void ATopDownPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ATopDownPlayerController, ExtractionPoints);
+}
+
 
 void ATopDownPlayerController::Tick(float DeltaSeconds)
 {

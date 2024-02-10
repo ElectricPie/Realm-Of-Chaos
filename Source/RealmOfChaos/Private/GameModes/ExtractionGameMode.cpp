@@ -9,45 +9,34 @@
 #include "Extraction/ExtractionPoint.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/TopDownPlayerController.h"
 #include "States/ExtractionGameState.h"
 
-void AExtractionGameMode::AuthGetExtractionPoints(const APawn& PlayerPawn)
-{
-	UE_LOG(LogTemp,	Warning, TEXT("Beep Boop"));
-	
-	if (!GetActiveExtractionPoints()) return;
-	
-	const FVector PlayerLocation = PlayerPawn.GetActorLocation();
-	TArray<AExtractionPoint*> PlayerPoints = ActiveExtractionPoints->GetPointsByDistance(PlayerLocation);
-	// TODO: Debug to test remove when done
-	for (const auto& PlayerPoint : PlayerPoints)
-	{
-		DrawDebugLine(GetWorld(), PlayerLocation, PlayerPoint->GetActorLocation(), FColor::Red, false, 10.f);
-	}
-}
 
 void AExtractionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	GetActiveExtractionPoints();
 }
 
 void AExtractionGameMode::HandleMatchIsWaitingToStart()
 {
 	Super::HandleMatchIsWaitingToStart();
-	
-	GetActiveExtractionPoints();
 }
 
 AActor* AExtractionGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
 	if (!GetActiveExtractionPoints())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to get Active Extraction Points for player spawning"));
+		UE_LOG(LogTemp, Error, TEXT("Failed to get Active Extraction Points for player spawning"));
 		return nullptr;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Spawning Players"));
+	ATopDownPlayerController* TopDownPlayer = Cast<ATopDownPlayerController>(Player);
+	if (!IsValid(TopDownPlayer))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Extraction Gamemode must use TopDownPlayerController"));
+		return nullptr;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Spawning Player"));
 
 	// Choose a player start
 	APlayerStart* FoundPlayerStart = nullptr;
@@ -92,6 +81,22 @@ AActor* AExtractionGameMode::ChoosePlayerStart_Implementation(AController* Playe
 			FoundPlayerStart = OccupiedStartPoints[FMath::RandRange(0, OccupiedStartPoints.Num() - 1)];
 		}
 	}
+
+	// Get the extraction points for the player
+	if (FoundPlayerStart != nullptr)
+	{
+		TArray<const AExtractionPoint*> SelectedExtractionPoints = ActiveExtractionPoints->GetPointsByDistance(FoundPlayerStart->GetActorLocation());
+		// TODO: Debug remove when done
+		if (World->GetNetMode() != NM_DedicatedServer)
+		{
+			for (auto& Point : SelectedExtractionPoints)
+			{
+				DrawDebugLine(World, FoundPlayerStart->GetActorLocation(), Point->GetActorLocation(), FColor::Green, false, 10.f);
+			}
+		}
+		TopDownPlayer->SetExtractionPoints(SelectedExtractionPoints);
+	}
+	
 	return FoundPlayerStart;
 }
 

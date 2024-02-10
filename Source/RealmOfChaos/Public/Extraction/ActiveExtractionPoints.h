@@ -21,7 +21,7 @@ public:
 	 * @param StartPoint The point to compare point distanced
 	 * @return An array of extraction points
 	 */
-	TArray<AExtractionPoint*> GetPointsByDistance(const FVector StartPoint) const;
+	TArray<const AExtractionPoint*> GetPointsByDistance(const FVector StartPoint) const;
 	
 private:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Extraction Points", meta=(AllowPrivateAccess="true", ToolTip="Extraction Points guarented to be accessable to all players"))

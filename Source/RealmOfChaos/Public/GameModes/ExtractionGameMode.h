@@ -16,16 +16,11 @@ class REALMOFCHAOS_API AExtractionGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
-public:
-	void AuthGetExtractionPoints(const APawn& PlayerPawn);
-
 protected:
 	virtual void BeginPlay() override;
 	
 	virtual void HandleMatchIsWaitingToStart() override;
-	//void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
-	//virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, AActor* StartSpot) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)

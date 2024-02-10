@@ -5,9 +5,9 @@
 
 #include "Extraction/ExtractionPoint.h"
 
-TArray<AExtractionPoint*> AActiveExtractionPoints::GetPointsByDistance(const FVector StartPoint) const
+TArray<const AExtractionPoint*> AActiveExtractionPoints::GetPointsByDistance(const FVector StartPoint) const
 {
-	TArray<AExtractionPoint*> ExtractionPoints;
+	TArray<const AExtractionPoint*> ExtractionPoints;
 	ExtractionPoints.Append(GuaranteedPoints);
 
 	if (RandomPoints.Num() > 0)
