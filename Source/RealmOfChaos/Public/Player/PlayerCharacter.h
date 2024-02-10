@@ -46,4 +46,6 @@ private:
 	float BackwardsSpeedModifier = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true", ToolTip="How far from forward the character can move before they are considered to be moving backwards", ClampMin="-1.0", ClampMax="1.0", UIMin="-1.0", UIMax="1.0"))
 	float BackwardsThreshold = -0.5f;
+
+	TArray<int32> ActiveExtractionPoints;
 };
