@@ -34,6 +34,16 @@ void AExtractionGameMode::StartPlayerExtraction(ATopDownPlayerController* Player
 	ExtractionCountdowns.Add(PlayerController, PlayerTimerHandle);
 }
 
+void AExtractionGameMode::CancelPlayerExtraction(ATopDownPlayerController* PlayerController)
+{
+	if (!IsValid(PlayerController) || !ExtractionCountdowns.Contains(PlayerController)) return;
+	
+	UE_LOG(LogTemp, Warning, TEXT("Stopping extraction for %s"), *PlayerController->GetActorNameOrLabel());
+	
+	FTimerHandle PlayerCountdown = ExtractionCountdowns.FindAndRemoveChecked(PlayerController);
+	GetWorldTimerManager().ClearTimer(PlayerCountdown);
+}
+
 void AExtractionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -131,4 +141,5 @@ bool AExtractionGameMode::GetActiveExtractionPoints()
 void AExtractionGameMode::ExtractPlayer(ATopDownPlayerController* PlayerController)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Extracted %s"), *PlayerController->GetActorNameOrLabel());
+	// TODO: Handle player extraction
 }

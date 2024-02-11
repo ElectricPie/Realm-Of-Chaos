@@ -42,10 +42,23 @@ void AExtractionPoint::NotifyActorBeginOverlap(AActor* OtherActor)
 	
 }
 
+void AExtractionPoint::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+
+	ATopDownPlayerController* PlayerController = Cast<ATopDownPlayerController>(OtherActor->GetOwner());
+	if (!IsValid(PlayerController)) return;
+	
+	AExtractionGameMode* GameMode = Cast<AExtractionGameMode>(GetWorld()->GetAuthGameMode());
+	if (!IsValid(GameMode)) return;
+
+	GameMode->CancelPlayerExtraction(PlayerController);
+}
+
 // Called every frame
 void AExtractionPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 }
 

@@ -18,7 +18,17 @@ class REALMOFCHAOS_API AExtractionGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
+	/**
+	 * @brief Starts a timer for the player, if player stays inside the Extraction Point they will be extracted
+	 * @param PlayerController The player inside the extraction point
+	 * @param ExtractionPoint The extraction point the player is at
+	 */
 	void StartPlayerExtraction(ATopDownPlayerController* PlayerController, const AExtractionPoint* ExtractionPoint);
+	/**
+	 * @brief Cancels a players extraction timer if there is one for the player
+	 * @param PlayerController The player to cancel the timer for
+	 */
+	void CancelPlayerExtraction(ATopDownPlayerController* PlayerController);
 
 protected:
 	virtual void BeginPlay() override;
