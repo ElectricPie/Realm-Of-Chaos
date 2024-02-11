@@ -22,6 +22,8 @@ class REALMOFCHAOS_API ATopDownPlayerController : public APlayerController
 
 public:
 	void AuthSetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints);
+
+	const TArray<const AExtractionPoint*>& GetExtractionPoints() const { return ExtractionPoints; }
 	
 protected:
 	virtual void BeginPlay() override;

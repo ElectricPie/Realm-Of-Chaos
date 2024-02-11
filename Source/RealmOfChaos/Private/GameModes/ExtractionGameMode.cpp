@@ -17,8 +17,15 @@ void AExtractionGameMode::StartPlayerExtraction(ATopDownPlayerController* Player
 {
 	if (!IsValid(PlayerController) || !IsValid(ExtractionPoint)) return;
 
+	// Check that the extraction point the player is at is one they have been assigned
+	if (!PlayerController->GetExtractionPoints().Contains(ExtractionPoint))
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s attempted to extract at non assigned Extraction Point"), *PlayerController->GetActorNameOrLabel());
+		return;
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Starting extraction for %s at %s"), *PlayerController->GetActorNameOrLabel(), *ExtractionPoint->GetPointName().ToString());
-
+	
 	// Start a timer to extract the player
 	FTimerHandle PlayerTimerHandle;
 	const FTimerDelegate ExtractionDelegate = FTimerDelegate::CreateUObject(this, &AExtractionGameMode::ExtractPlayer, PlayerController);
