@@ -140,6 +140,9 @@ bool AExtractionGameMode::GetActiveExtractionPoints()
 
 void AExtractionGameMode::ExtractPlayer(ATopDownPlayerController* PlayerController)
 {
+	if (!ExtractionCountdowns.Contains(PlayerController)) return;
+	ExtractionCountdowns.Remove(PlayerController);
+	
 	UE_LOG(LogTemp, Warning, TEXT("Extracted %s"), *PlayerController->GetActorNameOrLabel());
 	// TODO: Handle player extraction
 }
