@@ -21,11 +21,10 @@ class REALMOFCHAOS_API ATopDownPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	void SetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints);
+	void AuthSetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints);
 	
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void SetupInputComponent() override;

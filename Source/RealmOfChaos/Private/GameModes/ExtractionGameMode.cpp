@@ -13,6 +13,20 @@
 #include "States/ExtractionGameState.h"
 
 
+void AExtractionGameMode::StartPlayerExtraction(ATopDownPlayerController* PlayerController, const AExtractionPoint* ExtractionPoint)
+{
+	if (!IsValid(PlayerController) || !IsValid(ExtractionPoint)) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Starting extraction for %s at %s"), *PlayerController->GetActorNameOrLabel(), *ExtractionPoint->GetPointName().ToString());
+
+	// Start a timer to extract the player
+	FTimerHandle PlayerTimerHandle;
+	const FTimerDelegate ExtractionDelegate = FTimerDelegate::CreateUObject(this, &AExtractionGameMode::ExtractPlayer, PlayerController);
+	GetWorldTimerManager().SetTimer(PlayerTimerHandle, ExtractionDelegate, ExtractionPoint->GetExtractionTime(), false);
+	
+	ExtractionCountdowns.Add(PlayerController, PlayerTimerHandle);
+}
+
 void AExtractionGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -36,7 +50,6 @@ AActor* AExtractionGameMode::ChoosePlayerStart_Implementation(AController* Playe
 		UE_LOG(LogTemp, Error, TEXT("Extraction Gamemode must use TopDownPlayerController"));
 		return nullptr;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Spawning Player"));
 
 	// Choose a player start
 	APlayerStart* FoundPlayerStart = nullptr;
@@ -85,16 +98,8 @@ AActor* AExtractionGameMode::ChoosePlayerStart_Implementation(AController* Playe
 	// Get the extraction points for the player
 	if (FoundPlayerStart != nullptr)
 	{
-		TArray<const AExtractionPoint*> SelectedExtractionPoints = ActiveExtractionPoints->GetPointsByDistance(FoundPlayerStart->GetActorLocation());
-		// TODO: Debug remove when done
-		if (World->GetNetMode() != NM_DedicatedServer)
-		{
-			for (auto& Point : SelectedExtractionPoints)
-			{
-				DrawDebugLine(World, FoundPlayerStart->GetActorLocation(), Point->GetActorLocation(), FColor::Green, false, 10.f);
-			}
-		}
-		TopDownPlayer->SetExtractionPoints(SelectedExtractionPoints);
+		const TArray<const AExtractionPoint*> SelectedExtractionPoints = ActiveExtractionPoints->GetPointsByDistance(FoundPlayerStart->GetActorLocation());
+		TopDownPlayer->AuthSetExtractionPoints(SelectedExtractionPoints);
 	}
 	
 	return FoundPlayerStart;
@@ -114,4 +119,9 @@ bool AExtractionGameMode::GetActiveExtractionPoints()
 	}
 
 	return true;
+}
+
+void AExtractionGameMode::ExtractPlayer(ATopDownPlayerController* PlayerController)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Extracted %s"), *PlayerController->GetActorNameOrLabel());
 }

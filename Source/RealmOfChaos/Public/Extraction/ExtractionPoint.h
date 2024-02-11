@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ExtractionPoint.generated.h"
 
+class APlayerCharacter;
 UCLASS()
 class REALMOFCHAOS_API AExtractionPoint : public AActor
 {
@@ -16,6 +17,7 @@ public:
 	AExtractionPoint();
 
 	FName GetPointName() const { return PointName; }
+	float GetExtractionTime() const { return ExtractionTime; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,4 +32,7 @@ public:
 private:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Extraction Settings", meta=(AllowPrivateAccess="true"))
 	FName PointName = FName(TEXT("Not Set"));
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Extraction Settings", meta=(AllowPrivateAccess="true",
+		ToolTip="How long a player needs to remain in the point to extract", ClampMin=0.f, UIMin=0.f))
+	float ExtractionTime = 10.f;
 };

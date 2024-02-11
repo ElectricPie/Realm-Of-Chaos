@@ -4,6 +4,8 @@
 #include "Extraction/ExtractionPoint.h"
 
 #include "Components/ShapeComponent.h"
+#include "GameModes/ExtractionGameMode.h"
+#include "Player/TopDownPlayerController.h"
 
 // Sets default values
 AExtractionPoint::AExtractionPoint()
@@ -28,10 +30,16 @@ void AExtractionPoint::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (OtherActor)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s is in %s"), *OtherActor->GetName(), *PointName.ToString());
-	}
+	if (!HasAuthority()) return;
+
+	ATopDownPlayerController* PlayerController = Cast<ATopDownPlayerController>(OtherActor->GetOwner());
+	if (!IsValid(PlayerController)) return;
+	
+	AExtractionGameMode* GameMode = Cast<AExtractionGameMode>(GetWorld()->GetAuthGameMode());
+	if (!IsValid(GameMode)) return;
+
+	GameMode->StartPlayerExtraction(PlayerController, this);
+	
 }
 
 // Called every frame
