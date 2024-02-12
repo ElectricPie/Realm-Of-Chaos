@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/PlayerCharacter.h"
 #include "Extraction/ExtractionPoint.h"
+#include "Ui/ExtractionPlayerHud.h"
 
 
 void ATopDownPlayerController::AuthSetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints)
@@ -21,15 +22,30 @@ void ATopDownPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Only run on the controlling clients
+	if (!IsLocalPlayerController()) return;
+
 	bShowMouseCursor = true;
 	bReplicates = true;
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
 
+	// Set up input
 	if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<
 		UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		InputSubsystem->AddMappingContext(MappingContext, 0);
+	}
+
+	// Setup Ui
+	if (ExtractionHudClass)
+	{
+		UExtractionPlayerHud* Hud = CreateWidget<UExtractionPlayerHud>(this, ExtractionHudClass);
+		Hud->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExtractionHudClass is not set in %s"), *GetName());
 	}
 }
 
@@ -54,8 +70,8 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 		QueryParams.AddIgnoredActor(this);
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldPosition,
-												 WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility,
-												 QueryParams))
+		                                         WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility,
+		                                         QueryParams))
 		{
 			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 50.f, 8, FColor::Red);
 

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TopDownPlayerController.generated.h"
 
+class UExtractionPlayerHud;
 class AExtractionPoint;
 class UInputAction;
 class APlayerCharacter;
@@ -39,6 +40,9 @@ private:
 	UInputAction* MoveAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	float RaycastLimit = 3000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<UExtractionPlayerHud> ExtractionHudClass;
 
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;
