@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "ExtractionPlayerState.generated.h"
 
+class AExtractionPoint;
 /**
  * 
  */
@@ -13,5 +14,4 @@ UCLASS()
 class REALMOFCHAOS_API AExtractionPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-	
 };

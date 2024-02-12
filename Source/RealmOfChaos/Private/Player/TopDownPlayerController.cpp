@@ -5,29 +5,31 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/PlayerCharacter.h"
+#include "Extraction/ExtractionPoint.h"
+
+
+void ATopDownPlayerController::AuthSetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints)
+{
+	if (!HasAuthority()) return;
+
+	ExtractionPoints = NewExtractionPoints;
+}
 
 void ATopDownPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	bShowMouseCursor = true;
+	bReplicates = true;
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
 
-	if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<
+		UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		InputSubsystem->AddMappingContext(MappingContext, 0);
-	}
-}
-
-void ATopDownPlayerController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::Move);
 	}
 }
 
@@ -41,7 +43,7 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 	int32 ViewportSizeY;
 	GetViewportSize(ViewportSizeX, ViewportSizeY);
 
-	if (FVector2D MouseScreenLocation ; GetMousePosition(MouseScreenLocation.X, MouseScreenLocation.Y))
+	if (FVector2D MouseScreenLocation; GetMousePosition(MouseScreenLocation.X, MouseScreenLocation.Y))
 	{
 		FVector WorldPosition;
 		FVector WorldDirection;
@@ -52,19 +54,43 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 		QueryParams.AddIgnoredActor(this);
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldPosition,
-			WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility, QueryParams))
+												 WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility,
+												 QueryParams))
 		{
 			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 50.f, 8, FColor::Red);
 
 			RotateToTarget(HitResult.ImpactPoint);
 		}
 	}
+
+	for (auto& Point : ExtractionPoints)
+	{
+		DrawDebugLine(GetWorld(), PlayerCharacter->GetActorLocation(), Point->GetActorLocation(), FColor::Green);
+	}
 }
+
+void ATopDownPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::Move);
+	}
+}
+
+void ATopDownPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ATopDownPlayerController, ExtractionPoints);
+}
+
 
 void ATopDownPlayerController::Move(const FInputActionValue& Value)
 {
 	if (!PlayerCharacter) return;
-	
+
 	const FVector2d Dir = Value.Get<FVector2d>();
 	// Use normal to prevent diagonal movement being faster
 	PlayerCharacter->Move(FVector(Dir.X, Dir.Y, 0.f).GetSafeNormal());
