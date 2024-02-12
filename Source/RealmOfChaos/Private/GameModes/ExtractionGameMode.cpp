@@ -145,4 +145,5 @@ void AExtractionGameMode::ExtractPlayer(ATopDownPlayerController* PlayerControll
 	
 	UE_LOG(LogTemp, Warning, TEXT("Extracted %s"), *PlayerController->GetActorNameOrLabel());
 	// TODO: Handle player extraction
+	OnPlayerExtracted.Broadcast(PlayerController);
 }

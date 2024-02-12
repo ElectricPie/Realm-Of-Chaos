@@ -9,6 +9,9 @@
 
 class AActiveExtractionPoints;
 class ATopDownPlayerController;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerExtractedDelegate, ATopDownPlayerController*, PlayerController);
+
 /**
  * 
  */
@@ -39,9 +42,10 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	AActiveExtractionPoints* ActiveExtractionPoints;
-
 	UPROPERTY()
 	TMap<ATopDownPlayerController*, FTimerHandle> ExtractionCountdowns;
+	UPROPERTY()
+	FPlayerExtractedDelegate OnPlayerExtracted;
 
 	/**
 	 * @brief Attempts to get the AActiveExtractionPoints in the world for the ActiveExtractionPoints variable
