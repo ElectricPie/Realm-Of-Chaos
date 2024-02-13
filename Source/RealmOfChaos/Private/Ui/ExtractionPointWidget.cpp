@@ -7,16 +7,15 @@
 
 void UExtractionPointWidget::SetPointName(const FText& Text) const
 {
-	if (PointNameText)
-	{
-		PointNameText->SetText(Text);
-	}
+	if (!PointNameText) return;
+	
+	PointNameText->SetText(Text);
 }
 
 void UExtractionPointWidget::SetPointDistance(const int32 Distance) const
 {
-	if (PointDistanceText)
-	{
-		PointDistanceText->SetText(FText::FromString(FString::FromInt(Distance)));
-	}
+	if (!PointDistanceText) return;
+
+	const FString DistanceString = FString::Printf(TEXT("%dm"), Distance);
+	PointDistanceText->SetText(FText::FromString(DistanceString));
 }

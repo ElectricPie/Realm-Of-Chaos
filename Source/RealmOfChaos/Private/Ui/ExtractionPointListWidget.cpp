@@ -43,3 +43,19 @@ void UExtractionPointListWidget::RemoveExtractionPoint(const int32 Index)
 	ExtractionPointList->RemoveChild(ExtractionPointWidgets[Index]);
 	ExtractionPointWidgets.RemoveAt(Index);
 }
+
+void UExtractionPointListWidget::UpdateExtractionPoint(const int32 Index, const int32 Distance)
+{
+	if (!ExtractionPointList)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExtractionPointList is null"));
+		return;
+	}
+	if (Index < 0 || Index >= ExtractionPointWidgets.Num())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Index out of range"));
+		return;
+	}
+
+	ExtractionPointWidgets[Index]->SetPointDistance(Distance);
+}

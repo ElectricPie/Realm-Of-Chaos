@@ -29,6 +29,12 @@ public:
 	 * @param Index The index of the extraction point to remove
 	 */
 	void RemoveExtractionPoint(const int32 Index);
+	/**
+	 * @brief Updates the distance to an extraction point
+	 * @param Index The index of the extraction point to update
+	 * @param Distance The new distance to the extraction point in meters
+	 */
+	void UpdateExtractionPoint(const int32 Index, const int32 Distance);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true"))

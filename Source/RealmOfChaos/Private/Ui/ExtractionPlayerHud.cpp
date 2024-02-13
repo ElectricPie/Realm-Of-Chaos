@@ -18,5 +18,9 @@ void UExtractionPlayerHud::NativeConstruct()
 		ExtractionPointListWidget->AddExtractionPoint(FText::FromString("Extraction Point 4"), 170);
 
 		ExtractionPointListWidget->RemoveExtractionPoint(2);
+		ExtractionPointListWidget->RemoveExtractionPoint(5);
+
+		ExtractionPointListWidget->UpdateExtractionPoint(1, 25);
+		ExtractionPointListWidget->UpdateExtractionPoint(5, 200);
 	}
 }
