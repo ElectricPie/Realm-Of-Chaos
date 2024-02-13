@@ -7,6 +7,7 @@
 #include "ExtractionPointListWidget.generated.h"
 
 class UExtractionPointWidget;
+class UVerticalBox;
 
 /**
  * 
@@ -16,13 +17,14 @@ class REALMOFCHAOS_API UExtractionPointListWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeConstruct() override;
-	
+public:
+	void AddExtractionPoint(const FText& Name, const int32 Distance);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<UExtractionPointWidget> ExtractionPointWidgetClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", bindWidget))
-	UExtractionPointWidget* TestExtractionPointWidget;	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))
+	UVerticalBox* ExtractionPointList;
+	
+	TArray<UExtractionPointWidget*> ExtractionPointWidgets;
 };

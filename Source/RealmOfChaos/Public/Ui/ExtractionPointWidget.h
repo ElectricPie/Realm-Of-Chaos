@@ -17,7 +17,6 @@ class REALMOFCHAOS_API UExtractionPointWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	
 	/**
 	 * @brief Sets the extraction point name
 	 * @param Text The name of the extraction point
@@ -30,7 +29,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="Extraction")
 	void SetPointDistance(const int32 Distance) const;
-	
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))
 	UTextBlock* PointNameText;

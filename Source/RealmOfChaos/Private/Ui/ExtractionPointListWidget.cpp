@@ -2,15 +2,28 @@
 
 
 #include "Ui/ExtractionPointListWidget.h"
+
+#include "Components/VerticalBox.h"
 #include "Ui/ExtractionPointWidget.h"
 
-void UExtractionPointListWidget::NativeConstruct()
+void UExtractionPointListWidget::AddExtractionPoint(const FText& Name, const int32 Distance)
 {
-	Super::NativeConstruct();
-
-	if (TestExtractionPointWidget)
+	if (!ExtractionPointWidgetClass)
 	{
-		TestExtractionPointWidget->SetPointName(FText::FromString("Test Point"));
-		TestExtractionPointWidget->SetPointDistance(100);
+		UE_LOG(LogTemp, Error, TEXT("ExtractionPointWidgetClass is null"));
+		return;
 	}
+	if (!ExtractionPointList)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExtractionPointList is null"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Point Added"));
+	
+	UExtractionPointWidget* ExtractionPointWidget = CreateWidget<UExtractionPointWidget>(this, ExtractionPointWidgetClass);
+	ExtractionPointWidget->SetPointName(Name);
+	ExtractionPointWidget->SetPointDistance(Distance);
+	ExtractionPointWidgets.Add(ExtractionPointWidget);
+	ExtractionPointList->AddChild(ExtractionPointWidget);
 }
