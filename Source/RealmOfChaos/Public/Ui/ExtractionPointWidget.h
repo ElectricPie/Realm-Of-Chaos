@@ -4,21 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ExtractionPlayerHud.generated.h"
+#include "ExtractionPointWidget.generated.h"
 
-class UExtractionPointListWidget;
+class UTextBlock;
 
 /**
  * 
  */
 UCLASS()
-class REALMOFCHAOS_API UExtractionPlayerHud : public UUserWidget
+class REALMOFCHAOS_API UExtractionPointWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))
-	UExtractionPointListWidget* ExtractionPointListWidget;
-
-	
+	UTextBlock* PointNameText;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))
+	UTextBlock* PointDistanceText;
 };
