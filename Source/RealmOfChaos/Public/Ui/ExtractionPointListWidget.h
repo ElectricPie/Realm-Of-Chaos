@@ -18,13 +18,24 @@ class REALMOFCHAOS_API UExtractionPointListWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	/**
+	 * @brief Adds an extraction point to the list
+	 * @param Name The name of the extraction point
+	 * @param Distance The distance to the extraction point in meters
+	 */
 	void AddExtractionPoint(const FText& Name, const int32 Distance);
+	/**
+	 * @brief Removes an extraction point from the list
+	 * @param Index The index of the extraction point to remove
+	 */
+	void RemoveExtractionPoint(const int32 Index);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<UExtractionPointWidget> ExtractionPointWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))
 	UVerticalBox* ExtractionPointList;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true"))
 	TArray<UExtractionPointWidget*> ExtractionPointWidgets;
 };

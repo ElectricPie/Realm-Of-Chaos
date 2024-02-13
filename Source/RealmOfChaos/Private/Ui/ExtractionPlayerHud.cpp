@@ -8,12 +8,15 @@
 void UExtractionPlayerHud::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
+
+	// TODO: Debug remove when done
 	if (ExtractionPointListWidget != nullptr)
 	{
 		ExtractionPointListWidget->AddExtractionPoint(FText::FromString("Extraction Point 1"), 100);
 		ExtractionPointListWidget->AddExtractionPoint(FText::FromString("Extraction Point 2"), 50);
 		ExtractionPointListWidget->AddExtractionPoint(FText::FromString("Extraction Point 3"), 75);
 		ExtractionPointListWidget->AddExtractionPoint(FText::FromString("Extraction Point 4"), 170);
+
+		ExtractionPointListWidget->RemoveExtractionPoint(2);
 	}
 }

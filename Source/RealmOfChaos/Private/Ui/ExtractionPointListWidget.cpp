@@ -18,12 +18,28 @@ void UExtractionPointListWidget::AddExtractionPoint(const FText& Name, const int
 		UE_LOG(LogTemp, Error, TEXT("ExtractionPointList is null"));
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Point Added"));
 	
 	UExtractionPointWidget* ExtractionPointWidget = CreateWidget<UExtractionPointWidget>(this, ExtractionPointWidgetClass);
 	ExtractionPointWidget->SetPointName(Name);
 	ExtractionPointWidget->SetPointDistance(Distance);
 	ExtractionPointWidgets.Add(ExtractionPointWidget);
 	ExtractionPointList->AddChild(ExtractionPointWidget);
+}
+
+void UExtractionPointListWidget::RemoveExtractionPoint(const int32 Index)
+{
+	if (!ExtractionPointList)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExtractionPointList is null"));
+		return;
+	}
+	if (Index < 0 || Index >= ExtractionPointWidgets.Num())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Index out of range"));
+		return;
+	}
+
+	// Remove the widget from the list and the vertical box
+	ExtractionPointList->RemoveChild(ExtractionPointWidgets[Index]);
+	ExtractionPointWidgets.RemoveAt(Index);
 }
