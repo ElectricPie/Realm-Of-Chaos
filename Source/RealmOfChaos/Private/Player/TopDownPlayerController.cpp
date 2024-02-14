@@ -152,12 +152,20 @@ void ATopDownPlayerController::UpdateExtractionPointsUI()
 		ExtractionPointListWidget->ClearExtractionPoints();
 		for (const auto& Point : ExtractionPoints)
 		{
-			ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()),
-				FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()));
+			const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation());
+			ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()), DistanceToPoint);
 		}
 		
 		bResetPointUi = false;
+
+		// Dont need to update the points if we just reset them
+		return;
 	}
 	
-	// TODO: Update the extraction points list
+	// Update the extraction points list with the new distances
+	for (int32 i = 0; i < ExtractionPoints.Num(); ++i)
+	{
+		const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation());
+		ExtractionPointListWidget->UpdateExtractionPoint(i, DistanceToPoint);
+	}
 }
