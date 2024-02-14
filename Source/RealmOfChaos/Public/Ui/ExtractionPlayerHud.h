@@ -15,9 +15,9 @@ UCLASS()
 class REALMOFCHAOS_API UExtractionPlayerHud : public UUserWidget
 {
 	GENERATED_BODY()
-
-protected:
-	virtual void NativeConstruct() override;
+	
+public:
+	UExtractionPointListWidget* GetExtractionPointListWidget() const { return ExtractionPointListWidget; }
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))

@@ -35,6 +35,10 @@ public:
 	 * @param Distance The new distance to the extraction point in meters
 	 */
 	void UpdateExtractionPoint(const int32 Index, const int32 Distance);
+	/**
+	 * @brief Clears all extraction points from the list
+	 */
+	void ClearExtractionPoints();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true"))

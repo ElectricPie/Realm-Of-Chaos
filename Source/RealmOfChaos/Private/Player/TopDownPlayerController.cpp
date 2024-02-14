@@ -9,6 +9,7 @@
 #include "Player/PlayerCharacter.h"
 #include "Extraction/ExtractionPoint.h"
 #include "Ui/ExtractionPlayerHud.h"
+#include "Ui/ExtractionPointListWidget.h"
 
 
 void ATopDownPlayerController::AuthSetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints)
@@ -16,6 +17,11 @@ void ATopDownPlayerController::AuthSetExtractionPoints(TArray<const AExtractionP
 	if (!HasAuthority()) return;
 
 	ExtractionPoints = NewExtractionPoints;
+
+	if (IsLocalPlayerController())
+	{
+		OnRep_ExtractionPoints();
+	}
 }
 
 void ATopDownPlayerController::BeginPlay()
@@ -40,13 +46,16 @@ void ATopDownPlayerController::BeginPlay()
 	// Setup Ui
 	if (ExtractionHudClass)
 	{
-		UExtractionPlayerHud* Hud = CreateWidget<UExtractionPlayerHud>(this, ExtractionHudClass);
+		Hud = CreateWidget<UExtractionPlayerHud>(this, ExtractionHudClass);
 		Hud->AddToViewport();
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ExtractionHudClass is not set in %s"), *GetName());
 	}
+
+	// Setup extraction points hud update timer
+	GetWorldTimerManager().SetTimer(ExtractionPointsHudUpdateTimer, this, &ATopDownPlayerController::UpdateExtractionPointsUI, ExtractionPointsHudUpdateInterval, true);
 }
 
 void ATopDownPlayerController::Tick(float DeltaSeconds)
@@ -79,6 +88,7 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 		}
 	}
 
+	// TODO: Debug remove when done
 	for (auto& Point : ExtractionPoints)
 	{
 		DrawDebugLine(GetWorld(), PlayerCharacter->GetActorLocation(), Point->GetActorLocation(), FColor::Green);
@@ -123,4 +133,31 @@ void ATopDownPlayerController::RotateToTarget(FVector TargetLocation)
 
 		ClientSetRotation(Direction.Rotation());
 	}
+}
+
+void ATopDownPlayerController::OnRep_ExtractionPoints()
+{
+	bResetPointUi = true;
+}
+
+void ATopDownPlayerController::UpdateExtractionPointsUI()
+{
+	if (!IsLocalPlayerController() && !Hud) return;
+
+	UExtractionPointListWidget* ExtractionPointListWidget = Hud->GetExtractionPointListWidget();
+	if (!ExtractionPointListWidget) return;
+
+	if (bResetPointUi)
+	{
+		ExtractionPointListWidget->ClearExtractionPoints();
+		for (const auto& Point : ExtractionPoints)
+		{
+			ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()),
+				FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()));
+		}
+		
+		bResetPointUi = false;
+	}
+	
+	// TODO: Update the extraction points list
 }

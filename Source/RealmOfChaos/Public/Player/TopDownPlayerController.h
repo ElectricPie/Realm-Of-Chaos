@@ -43,12 +43,25 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess = "true"))
 	TSubclassOf<UExtractionPlayerHud> ExtractionHudClass;
-
+	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
+	UExtractionPlayerHud* Hud;
+	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
+	float ExtractionPointsHudUpdateInterval = 1.f;
+	
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_ExtractionPoints)
 	TArray<const AExtractionPoint*> ExtractionPoints;
 
+	
+	bool bResetPointUi;
+	FTimerHandle ExtractionPointsHudUpdateTimer;
+	
 	void Move(const FInputActionValue& Value);
 	void RotateToTarget(FVector TargetLocation);
+
+	UFUNCTION()
+	void OnRep_ExtractionPoints();
+	
+	void UpdateExtractionPointsUI();
 };

@@ -59,3 +59,9 @@ void UExtractionPointListWidget::UpdateExtractionPoint(const int32 Index, const 
 
 	ExtractionPointWidgets[Index]->SetPointDistance(Distance);
 }
+
+void UExtractionPointListWidget::ClearExtractionPoints()
+{
+	ExtractionPointList->ClearChildren();
+	ExtractionPointWidgets.Empty();
+}
