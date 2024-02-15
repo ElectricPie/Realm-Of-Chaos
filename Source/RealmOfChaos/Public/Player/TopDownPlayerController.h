@@ -45,8 +45,11 @@ private:
 	TSubclassOf<UExtractionPlayerHud> ExtractionHudClass;
 	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
 	UExtractionPlayerHud* Hud;
-	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
 	float ExtractionPointsHudUpdateInterval = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="True", ClampMin="0.0", UIMin="0.0",
+		ToolTip="The distance to the extraction point is multiplied by this value"))
+	float DistanceToExtractionPointModifier = 0.01f;
 	
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;

@@ -82,6 +82,7 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 		                                         WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility,
 		                                         QueryParams))
 		{
+			// TODO: Debug remove when done
 			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 50.f, 8, FColor::Red);
 
 			RotateToTarget(HitResult.ImpactPoint);
@@ -152,7 +153,7 @@ void ATopDownPlayerController::UpdateExtractionPointsUI()
 		ExtractionPointListWidget->ClearExtractionPoints();
 		for (const auto& Point : ExtractionPoints)
 		{
-			const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation());
+			const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()) * DistanceToExtractionPointModifier;
 			ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()), DistanceToPoint);
 		}
 		
@@ -165,7 +166,7 @@ void ATopDownPlayerController::UpdateExtractionPointsUI()
 	// Update the extraction points list with the new distances
 	for (int32 i = 0; i < ExtractionPoints.Num(); ++i)
 	{
-		const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation());
+		const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation()) * DistanceToExtractionPointModifier;
 		ExtractionPointListWidget->UpdateExtractionPoint(i, DistanceToPoint);
 	}
 }
