@@ -8,6 +8,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/PlayerCharacter.h"
 #include "Extraction/ExtractionPoint.h"
+#include "Ui/ExtractionPlayerHud.h"
+#include "Ui/ExtractionPointListWidget.h"
 
 
 void ATopDownPlayerController::AuthSetExtractionPoints(TArray<const AExtractionPoint*> NewExtractionPoints)
@@ -15,22 +17,45 @@ void ATopDownPlayerController::AuthSetExtractionPoints(TArray<const AExtractionP
 	if (!HasAuthority()) return;
 
 	ExtractionPoints = NewExtractionPoints;
+
+	if (IsLocalPlayerController())
+	{
+		OnRep_ExtractionPoints();
+	}
 }
 
 void ATopDownPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Only run on the controlling clients
+	if (!IsLocalPlayerController()) return;
+
 	bShowMouseCursor = true;
 	bReplicates = true;
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
 
+	// Set up input
 	if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<
 		UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		InputSubsystem->AddMappingContext(MappingContext, 0);
 	}
+
+	// Setup Ui
+	if (ExtractionHudClass)
+	{
+		Hud = CreateWidget<UExtractionPlayerHud>(this, ExtractionHudClass);
+		Hud->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExtractionHudClass is not set in %s"), *GetName());
+	}
+
+	// Setup extraction points hud update timer
+	GetWorldTimerManager().SetTimer(ExtractionPointsHudUpdateTimer, this, &ATopDownPlayerController::UpdateExtractionPointsUI, ExtractionPointsHudUpdateInterval, true);
 }
 
 void ATopDownPlayerController::Tick(float DeltaSeconds)
@@ -54,15 +79,17 @@ void ATopDownPlayerController::Tick(float DeltaSeconds)
 		QueryParams.AddIgnoredActor(this);
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldPosition,
-												 WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility,
-												 QueryParams))
+		                                         WorldPosition + WorldDirection * RaycastLimit, ECC_Visibility,
+		                                         QueryParams))
 		{
+			// TODO: Debug remove when done
 			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 50.f, 8, FColor::Red);
 
 			RotateToTarget(HitResult.ImpactPoint);
 		}
 	}
 
+	// TODO: Debug remove when done
 	for (auto& Point : ExtractionPoints)
 	{
 		DrawDebugLine(GetWorld(), PlayerCharacter->GetActorLocation(), Point->GetActorLocation(), FColor::Green);
@@ -106,5 +133,40 @@ void ATopDownPlayerController::RotateToTarget(FVector TargetLocation)
 		Direction.Z = 0.f;
 
 		ClientSetRotation(Direction.Rotation());
+	}
+}
+
+void ATopDownPlayerController::OnRep_ExtractionPoints()
+{
+	bResetPointUi = true;
+}
+
+void ATopDownPlayerController::UpdateExtractionPointsUI()
+{
+	if (!IsLocalPlayerController() && !Hud) return;
+
+	UExtractionPointListWidget* ExtractionPointListWidget = Hud->GetExtractionPointListWidget();
+	if (!ExtractionPointListWidget) return;
+
+	if (bResetPointUi)
+	{
+		ExtractionPointListWidget->ClearExtractionPoints();
+		for (const auto& Point : ExtractionPoints)
+		{
+			const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()) * DistanceToExtractionPointModifier;
+			ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()), DistanceToPoint);
+		}
+		
+		bResetPointUi = false;
+
+		// Dont need to update the points if we just reset them
+		return;
+	}
+	
+	// Update the extraction points list with the new distances
+	for (int32 i = 0; i < ExtractionPoints.Num(); ++i)
+	{
+		const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation()) * DistanceToExtractionPointModifier;
+		ExtractionPointListWidget->UpdateExtractionPoint(i, DistanceToPoint);
 	}
 }
