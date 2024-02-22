@@ -4,9 +4,7 @@
 template <class T>
 struct TInventoryItem
 {
-	TInventoryItem(const T& Item, const int32 XSize, const int32 YSize): Item(MakeShared<T>(Item)),ItemXSize(XSize), ItemYSize(YSize)
-	{
-	}
+	TInventoryItem(const T& Item, const int32 XSize, const int32 YSize): Item(MakeShared<T>(Item)),ItemXSize(XSize), ItemYSize(YSize) {	}
 
 	TSharedRef<T> GetItem() { return Item; }
 	int32 GetItemXSize() const { return ItemXSize; }
@@ -27,7 +25,9 @@ public:
 
 	int32 GetRows() const { return Rows; }
 	int32 GetColumns() const { return Columns; }
+	bool AddItem(const T& ItemToAdd, const int32 XPos, const int32 YPos, const int32 XSize, const int32 YSize);
 
+	
 private:
 	int32 Rows;
 	int32 Columns;
