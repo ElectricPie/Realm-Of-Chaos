@@ -6,7 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "DemoInventoryComponent.generated.h"
 
-class FInventoryGrid;
+class FInventoryDemoItem;
+template <typename T>
+class TInventoryGrid;
 
 UCLASS(Blueprintable, ClassGroup=(JigsawInventory), meta=(BlueprintSpawnableComponent))
 class JIGSAWINVENTORYSYSTEM_API UDemoInventoryComponent : public UActorComponent
@@ -21,10 +23,11 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 private:
-	TUniquePtr<FInventoryGrid> Inventory;
+	TUniquePtr<TInventoryGrid<FInventoryDemoItem>> Inventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	int32 SlotRows = 5;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	int32 SlotColumns = 2;
 };
