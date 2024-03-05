@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryGrid.h"
 #include "DemoInventoryComponent.generated.h"
 
 class FInventoryDemoItem;
-template <typename T>
-class TInventoryGrid;
 
 UCLASS(Blueprintable, ClassGroup=(JigsawInventory), meta=(BlueprintSpawnableComponent))
 class JIGSAWINVENTORYSYSTEM_API UDemoInventoryComponent : public UActorComponent
