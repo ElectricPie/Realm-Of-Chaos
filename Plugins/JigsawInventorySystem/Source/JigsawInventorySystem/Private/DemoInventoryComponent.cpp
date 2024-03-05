@@ -23,7 +23,7 @@ void UDemoInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	Inventory = MakeUnique<TInventoryGrid<FInventoryDemoItem>>(SlotRows, SlotColumns);
+	Inventory = MakeUnique<TInventoryGrid<FInventoryDemoItem>>(SlotColumns, SlotRows);
 	UE_LOG(LogTemp, Warning, TEXT("Inventory created with %d rows and %d columns"), SlotRows, SlotColumns);
 	
 	const FInventoryDemoItem DemoItemOne = FInventoryDemoItem(FName("Item1"), FString("This is item 1"), 100);
@@ -42,6 +42,6 @@ void UDemoInventoryComponent::BeginPlay()
 	// Try to add item in the grid but reaches outside the grid
 	Inventory->AddItem(DemoItemOne, 2, 1, 2, 2);
 
-	// Successfully add item
+	// // Successfully add item
 	Inventory->AddItem(DemoItemOne, 0, 2, 2, 2);
 }

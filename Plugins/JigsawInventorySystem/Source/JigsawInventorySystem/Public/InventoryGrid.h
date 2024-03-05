@@ -28,12 +28,12 @@ template <typename T>
 class TInventoryGrid
 {
 public:
-	TInventoryGrid(const int32 GridRows, const int32 GridColumns): Rows(GridRows), Columns(GridColumns)
+	TInventoryGrid(const int32 GridColumns, const int32 GridRows): Columns(GridColumns), Rows(GridRows)
 	{
-		Slots.SetNum(GridRows);
-		for (int32 i = 0; i < GridRows; i++)
+		Slots.SetNum(GridColumns);
+		for (int32 i = 0; i < GridColumns; i++)
 		{
-			Slots[i].SetNum(GridColumns);
+			Slots[i].SetNum(GridRows);
 		}
  	}
 
@@ -67,9 +67,9 @@ EInventoryAddError TInventoryGrid<T>::AddItem(const T& ItemToAdd, const int32 XP
 	}
 	
 	// Check if the slot and the surrounding slots are empty
-	for (int32 i = YPos; i < YPos + YSize; i++)
+	for (int32 i = XPos; i < XPos + XSize; i++)
 	{
-		for (int32 j = XPos; j < XPos + XSize; j++)
+		for (int32 j = YPos; j < YPos + YSize; j++)
 		{
 			if (Slots[i][j].IsValid())
 			{
@@ -80,9 +80,9 @@ EInventoryAddError TInventoryGrid<T>::AddItem(const T& ItemToAdd, const int32 XP
 	}
 	
 	// Add the item to the grid
-	for (int32 i = YPos; i < YPos + YSize; i++)
+	for (int32 i = XPos; i < XPos + XSize; i++)
 	{
-		for (int32 j = XPos; j < XPos + XSize; j++)
+		for (int32 j = YPos; j < YPos + YSize; j++)
 		{
 			Slots[i][j] = MakeUnique<TInventoryItem<T>>(ItemToAdd, XSize, YSize);
 		}
