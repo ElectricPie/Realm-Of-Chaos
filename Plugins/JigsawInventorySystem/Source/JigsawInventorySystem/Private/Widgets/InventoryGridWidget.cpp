@@ -5,6 +5,7 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/SizeBox.h"
+#include "Components/InventoryComponent.h"
 
 void UInventoryGridWidget::NativeConstruct()
 {
@@ -12,19 +13,24 @@ void UInventoryGridWidget::NativeConstruct()
 	
 }
 
-void UInventoryGridWidget::InitializeGrid(const int32 Columns, const int32 Rows, const float NewTileSize)
+void UInventoryGridWidget::InitializeGrid(const UInventoryComponent* NewInventoryComponent, const float NewTileSize)
 {
+	if (!IsValid(NewInventoryComponent)) return;
+
+	InventoryComponent = NewInventoryComponent;
 	TileSize = NewTileSize;
 
+	const int32 Columns = InventoryComponent->GetColumns();
+	const int32 Rows = InventoryComponent->GetRows();
 	GridSizeBox->SetWidthOverride(TileSize * Columns);
 	GridSizeBox->SetHeightOverride(TileSize * Rows);
 
+	// Calculate grid lines to be drawn in the paint method`
 	for (int32 i = 0; i < Columns; i++)
 	{
 		const FLine NewLine(FVector2D(i * TileSize, 0.f), FVector2D(i, Rows) * TileSize);
 		GridLines.Add(NewLine);
 	}
-
 	for (int32 i = 0; i < Rows; i++)
 	{
 		const FLine NewLine(FVector2D(0.f, i * TileSize), FVector2D(Columns, i) * TileSize);

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryGridWidget.generated.h"
 
+class UInventoryComponent;
 class USizeBox;
 class UCanvasPanel;
 
@@ -40,7 +41,7 @@ public:
 
 	// TODO: Switch columns and rows for inventory component
 	UFUNCTION(BlueprintCallable, Category="Grid")
-	void InitializeGrid(const int32 Columns, const int32 Rows, const float NewTileSize = 50.f);
+	void InitializeGrid(const UInventoryComponent* NewInventoryComponent, const float NewTileSize = 50.f);
 
 protected:
 	virtual int32 NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override;
@@ -55,6 +56,9 @@ private:
 	float TileSize = 50.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
 	FLinearColor GridLineColor = FLinearColor(0.f, 0.f, 0.f, 0.5f);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
 	TArray<FLine> GridLines;
+
+	UPROPERTY(BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
+	const UInventoryComponent* InventoryComponent;
 };
