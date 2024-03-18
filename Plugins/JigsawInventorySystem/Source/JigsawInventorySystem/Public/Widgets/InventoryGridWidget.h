@@ -9,6 +9,24 @@
 class USizeBox;
 class UCanvasPanel;
 
+USTRUCT(BlueprintType)
+struct FLine
+{
+	GENERATED_BODY()
+
+	FLine(): Start(FVector2D::ZeroVector), End(FVector2D::ZeroVector)
+	{
+	}
+	FLine(const FVector2D& Start, const FVector2D& End): Start(Start), End(End)
+	{
+	}
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Line")
+	FVector2D Start;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Line")
+	FVector2D End;
+};
+
 /**
  * 
  */
@@ -20,10 +38,23 @@ class JIGSAWINVENTORYSYSTEM_API UInventoryGridWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+	// TODO: Switch columns and rows for inventory component
+	UFUNCTION(BlueprintCallable, Category="Grid")
+	void InitializeGrid(const int32 Columns, const int32 Rows, const float NewTileSize = 50.f);
+
+protected:
+	virtual int32 NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override;
+	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	USizeBox* GridSizeBox;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UCanvasPanel* GridCanvasPanel; // Look into alternatives?
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
+	float TileSize = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
+	FLinearColor GridLineColor = FLinearColor(0.f, 0.f, 0.f, 0.5f);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
+	TArray<FLine> GridLines;
 };
