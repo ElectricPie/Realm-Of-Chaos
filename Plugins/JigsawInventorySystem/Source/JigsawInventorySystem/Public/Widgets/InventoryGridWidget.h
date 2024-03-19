@@ -39,7 +39,6 @@ class JIGSAWINVENTORYSYSTEM_API UInventoryGridWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-	// TODO: Switch columns and rows for inventory component
 	UFUNCTION(BlueprintCallable, Category="Grid")
 	void InitializeGrid(const UInventoryComponent* NewInventoryComponent, const float NewTileSize = 50.f);
 

@@ -26,12 +26,12 @@ void UInventoryGridWidget::InitializeGrid(const UInventoryComponent* NewInventor
 	GridSizeBox->SetHeightOverride(TileSize * Rows);
 
 	// Calculate grid lines to be drawn in the paint method`
-	for (int32 i = 0; i < Columns; i++)
+	for (int32 i = 0; i < Columns + 1; i++)
 	{
 		const FLine NewLine(FVector2D(i * TileSize, 0.f), FVector2D(i, Rows) * TileSize);
 		GridLines.Add(NewLine);
 	}
-	for (int32 i = 0; i < Rows; i++)
+	for (int32 i = 0; i < Rows + 1; i++)
 	{
 		const FLine NewLine(FVector2D(0.f, i * TileSize), FVector2D(Columns, i) * TileSize);
 		GridLines.Add(NewLine);
