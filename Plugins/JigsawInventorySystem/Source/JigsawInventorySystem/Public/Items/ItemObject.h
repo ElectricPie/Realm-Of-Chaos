@@ -17,7 +17,11 @@ class JIGSAWINVENTORYSYSTEM_API UItemObject : public UObject
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category="Item")
 	FIntPoint GetSize() const { return Size; }
+	UFUNCTION(BlueprintCallable, Category="Item")
+	UMaterialInterface* GetIcon() const;
+	
 	
 private:
 	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))

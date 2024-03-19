@@ -8,6 +8,8 @@
 
 class UItemObject;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryChangedSignature);
+
 USTRUCT(BlueprintType)
 struct FTile
 {
@@ -36,7 +38,11 @@ class JIGSAWINVENTORYSYSTEM_API UInventoryComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UInventoryComponent();
-
+	
+	// TODO: Should probably be private with functions bind/unbind
+	UPROPERTY(BlueprintAssignable, Category="Inventory")
+	FOnInventoryChangedSignature OnInventoryChangedEvent;
+	
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	int32 GetColumns() const { return Columns; }
 	UFUNCTION(BlueprintCallable, Category="Inventory")
@@ -74,6 +80,10 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool TryAddItem(UItemObject* ItemObject);
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	TMap<UItemObject*, FTile> GetAllItems() const;
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	void RemoveItem(UItemObject* ItemObject);
 
 protected:
 	// Called when the game starts

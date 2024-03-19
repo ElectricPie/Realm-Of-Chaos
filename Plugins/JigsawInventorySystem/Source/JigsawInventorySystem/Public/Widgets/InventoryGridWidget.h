@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryGridWidget.generated.h"
 
+class UItemWidget;
 class UInventoryComponent;
 class USizeBox;
 class UCanvasPanel;
@@ -40,8 +41,10 @@ public:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION(BlueprintCallable, Category="Grid")
-	void InitializeGrid(const UInventoryComponent* NewInventoryComponent, const float NewTileSize = 50.f);
-
+	void InitializeGrid(UInventoryComponent* NewInventoryComponent, const float NewTileSize = 50.f);
+	UFUNCTION(BlueprintCallable, Category="Grid")
+	void Refresh();
+	
 protected:
 	virtual int32 NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements, int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override;
 	
@@ -57,7 +60,13 @@ private:
 	FLinearColor GridLineColor = FLinearColor(0.f, 0.f, 0.f, 0.5f);
 	UPROPERTY(BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
 	TArray<FLine> GridLines;
+	
+	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UInventoryComponent* InventoryComponent;
 
-	UPROPERTY(BlueprintReadOnly, Category="Grid Drawing", meta=(AllowPrivateAccess="true"))
-	const UInventoryComponent* InventoryComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Item Drawing", meta=(AllowPrivateAccess="true"))
+	TSubclassOf<UItemWidget> ItemWidgetClass;
+
+	UFUNCTION()
+	void OnItemRemoved(UItemObject* RemovedItem);
 };

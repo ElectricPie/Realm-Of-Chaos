@@ -4,8 +4,11 @@
 #include "Widgets//InventoryGridWidget.h"
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Components/SizeBox.h"
 #include "Components/InventoryComponent.h"
+#include "Widgets/ItemWidget.h"
 
 void UInventoryGridWidget::NativeConstruct()
 {
@@ -13,7 +16,7 @@ void UInventoryGridWidget::NativeConstruct()
 	
 }
 
-void UInventoryGridWidget::InitializeGrid(const UInventoryComponent* NewInventoryComponent, const float NewTileSize)
+void UInventoryGridWidget::InitializeGrid(UInventoryComponent* NewInventoryComponent, const float NewTileSize)
 {
 	if (!IsValid(NewInventoryComponent)) return;
 
@@ -36,6 +39,32 @@ void UInventoryGridWidget::InitializeGrid(const UInventoryComponent* NewInventor
 		const FLine NewLine(FVector2D(0.f, i * TileSize), FVector2D(Columns, i) * TileSize);
 		GridLines.Add(NewLine);
 	}
+	InventoryComponent->OnInventoryChangedEvent.AddDynamic(this, &UInventoryGridWidget::Refresh);
+
+	Refresh();
+}
+
+void UInventoryGridWidget::Refresh()
+{
+	if (!IsValid(GridCanvasPanel)) return;
+	if (ItemWidgetClass == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ItemWidgetClass is not set in InventoryGridWidget"));
+		return;
+	}
+
+	GridCanvasPanel->ClearChildren();
+	TMap<UItemObject*, FTile> AllItems = InventoryComponent->GetAllItems();
+	for (auto& [ItemObject, TopLeftTile] : AllItems)
+	{
+		UItemWidget* ItemWidget = CreateWidget<UItemWidget>(GetWorld(), ItemWidgetClass);
+		ItemWidget->InitializeItem(ItemObject, TileSize);
+		ItemWidget->OnRemovedEvent.AddDynamic(this, &UInventoryGridWidget::OnItemRemoved);
+
+		UCanvasPanelSlot* NewItemCanvasSlot = GridCanvasPanel->AddChildToCanvas(ItemWidget);
+		NewItemCanvasSlot->SetAutoSize(true);
+		NewItemCanvasSlot->SetPosition(FVector2D(TopLeftTile.X, TopLeftTile.Y) * TileSize);
+	}
 }
 
 int32 UInventoryGridWidget::NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry,
@@ -50,4 +79,10 @@ int32 UInventoryGridWidget::NativePaint(const FPaintArgs& Args, const FGeometry&
 	
 	return Super::NativePaint(Args, AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle,
 	                          bParentEnabled);
+}
+
+void UInventoryGridWidget::OnItemRemoved(UItemObject* RemovedItem)
+{
+	if (!IsValid(InventoryComponent)) return;
+	InventoryComponent->RemoveItem(RemovedItem);
 }
