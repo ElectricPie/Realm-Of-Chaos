@@ -3,6 +3,8 @@
 
 #include "Components/InventoryComponent.h"
 
+#include "Items/ItemObject.h"
+
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
 {
@@ -13,6 +15,43 @@ UInventoryComponent::UInventoryComponent()
 	// ...
 }
 
+bool UInventoryComponent::IsSpaceAvailable(const UItemObject* ItemObject, const int32 TopLeftIndex)
+{
+	const FTile Tile = IndexToTile(TopLeftIndex);
+	const FIntPoint ItemSize = ItemObject->GetSize();
+
+	for (int32 x = Tile.X; x < Tile.X + ItemSize.X; x++)
+	{
+		for (int32 y = Tile.Y; y < Tile.Y + ItemSize.Y; y++)
+		{
+			const FTile CurrentTile = FTile(x, y);
+			if (!IsTileValid(CurrentTile)) return false;
+			
+			UItemObject* Item;
+			if (!GetItemAtIndex(TileToIndex(CurrentTile), Item)) return false;
+			if (IsValid(Item)) return false;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Space Available"));
+	return true;
+}
+
+bool UInventoryComponent::TryAddItem(UItemObject* ItemObject)
+{
+	if (!IsValid(ItemObject)) return false;
+	
+	for (int32 i = 0; i < Items.Num(); i++)
+	{
+		if (IsSpaceAvailable(ItemObject, i))
+		{
+			AddItemAtIndex(ItemObject, i);
+			return true;
+		}
+	}
+	
+	return false;
+}
 
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
@@ -20,7 +59,7 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	Items.SetNum(Columns * Rows);
 }
 
 
@@ -30,5 +69,30 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+bool UInventoryComponent::GetItemAtIndex(const int32 Index, UItemObject*& OutItemObject)
+{
+	if (!Items.IsValidIndex(Index)) return false;
+	//if (Items[Index] == nullptr) return false;
+
+	OutItemObject = Items[Index];
+	return true;
+}
+
+void UInventoryComponent::AddItemAtIndex(UItemObject* ItemObject, const int32 TopLeftIndex)
+{
+	const FTile Cell = IndexToTile(TopLeftIndex);
+	const FIntPoint ItemSize = ItemObject->GetSize();
+
+	for (int32 x = Cell.X; x < Cell.X + ItemSize.X; x++)
+	{
+		for (int32 y = Cell.Y; y < Cell.Y + ItemSize.Y; y++)
+		{
+			Items[TileToIndex(FTile(x, y))] = ItemObject;
+		}
+	}
+
+	bIsDirty = true;
 }
 

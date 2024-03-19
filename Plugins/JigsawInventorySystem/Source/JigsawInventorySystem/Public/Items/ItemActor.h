@@ -17,10 +17,13 @@ public:
 	// Sets default values for this actor's properties
 	AItemActor();
 
+	UFUNCTION(BlueprintCallable, Category="Item")
+	const UItemObject* GetItemObject() const { return ItemObject; }
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
 	UFUNCTION(BlueprintNativeEvent)
 	UItemObject* GetDefaultObject();
 

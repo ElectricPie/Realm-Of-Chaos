@@ -3,6 +3,8 @@
 
 #include "Items/ItemActor.h"
 
+#include "Items/ItemObject.h"
+
 // Sets default values
 AItemActor::AItemActor()
 {
@@ -20,7 +22,11 @@ AItemActor::AItemActor()
 void AItemActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (!IsValid(ItemObject))
+	{
+		ItemObject = GetDefaultObject();
+	}
 }
 
 UItemObject* AItemActor::GetDefaultObject_Implementation()
