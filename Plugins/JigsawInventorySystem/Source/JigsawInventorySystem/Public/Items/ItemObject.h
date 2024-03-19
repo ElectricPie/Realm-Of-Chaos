@@ -22,4 +22,10 @@ public:
 private:
 	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
 	FIntPoint Size = FIntPoint(1, 1);
+	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
+	UMaterialInterface* Icon;
+	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
+	UMaterialInterface* IconRotated;
+	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
+	TSubclassOf<AItemActor> ItemClass;
 };
