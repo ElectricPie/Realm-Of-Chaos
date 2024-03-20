@@ -3,6 +3,7 @@
 
 #include "Widgets/ItemWidget.h"
 
+#include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
 #include "Items/ItemObject.h"
@@ -25,4 +26,18 @@ void UItemWidget::Refresh()
 	BackgroundSizeBox->SetHeightOverride(WidgetSize.Y);
 	
 	ItemIcon->SetBrushFromMaterial(ItemObject->GetIcon());
+}
+
+void UItemWidget::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+
+	BackgroundBorder->SetBrushColor(HoveredBackgroundColor);
+}
+
+void UItemWidget::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseLeave(InMouseEvent);
+
+	BackgroundBorder->SetBrushColor(BackgroundColor);
 }
