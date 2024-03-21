@@ -49,6 +49,18 @@ bool UInventoryComponent::TryAddItem(UItemObject* ItemObject)
 		}
 	}
 	
+	ItemObject->Rotate();
+	for (int32 i = 0; i < Items.Num(); i++)
+	{
+		if (IsSpaceAvailable(ItemObject, i))
+		{
+			AddItemAtIndex(ItemObject, i);
+			return true;
+		}
+	}
+
+	// Restore the item to its original rotation
+	ItemObject->SetRotated(false);
 	return false;
 }
 

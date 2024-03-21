@@ -94,6 +94,11 @@ public:
 	bool TryAddItemAtIndex(UItemObject* ItemObject, const int32 TopLeftIndex);
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	TMap<UItemObject*, FTile> GetAllItems() const;
+	
+	/**
+	 * @brief Removes the item from the inventory
+	 * @param ItemObject The item to be removed
+	 */
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	void RemoveItem(UItemObject* ItemObject);
 
