@@ -23,6 +23,10 @@ struct FTile
 	{
 	}
 
+	FTile (const FIntPoint Point): X(Point.X), Y(Point.Y)
+	{
+	}
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell");
 	int32 X;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Cell");
@@ -74,12 +78,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool IsSpaceAvailable(const UItemObject* ItemObject, const int32 TopLeftIndex);
 	/**
-	 * @brief Attempts to add an item to the inventory
+	 * @brief Attempts to add an item to the inventory in the first available spaces
 	 * @param ItemObject The item to add
 	 * @return true if the item was added, otherwise false
 	 */
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool TryAddItem(UItemObject* ItemObject);
+	/**
+	 * @brief Attempts to add an item to the inventory at the specified index
+	 * @param ItemObject The item to add
+	 * @param TopLeftIndex The index to add the item at
+	 * @return true if the item was added, otherwise false
+	 */
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	bool TryAddItemAtIndex(UItemObject* ItemObject, const int32 TopLeftIndex);
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	TMap<UItemObject*, FTile> GetAllItems() const;
 	UFUNCTION(BlueprintCallable, Category="Inventory")

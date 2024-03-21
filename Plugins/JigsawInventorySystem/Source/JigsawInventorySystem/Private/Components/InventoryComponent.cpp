@@ -52,6 +52,17 @@ bool UInventoryComponent::TryAddItem(UItemObject* ItemObject)
 	return false;
 }
 
+bool UInventoryComponent::TryAddItemAtIndex(UItemObject* ItemObject, const int32 TopLeftIndex)
+{
+	if (IsSpaceAvailable(ItemObject, TopLeftIndex))
+	{
+		AddItemAtIndex(ItemObject, TopLeftIndex);
+		return true;
+	}
+
+	return false;
+}
+
 TMap<UItemObject*, FTile> UInventoryComponent::GetAllItems() const
 {
 	TMap<UItemObject*, FTile> AllItems;
@@ -68,7 +79,6 @@ TMap<UItemObject*, FTile> UInventoryComponent::GetAllItems() const
 
 void UInventoryComponent::RemoveItem(UItemObject* ItemObject)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Removing item"));
 	if (!IsValid(ItemObject)) return;
 
 	for (int32 i = 0; i < Items.Num(); i++)

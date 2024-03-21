@@ -3,18 +3,14 @@
 
 #include "Widgets//InventoryGridWidget.h"
 
+#include "InventoryDemoGameState.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/SizeBox.h"
 #include "Components/InventoryComponent.h"
+#include "Items/ItemObject.h"
 #include "Widgets/ItemWidget.h"
-
-void UInventoryGridWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-}
 
 void UInventoryGridWidget::InitializeGrid(UInventoryComponent* NewInventoryComponent, const float NewTileSize)
 {
@@ -67,8 +63,14 @@ void UInventoryGridWidget::Refresh()
 	}
 }
 
+void UInventoryGridWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
 int32 UInventoryGridWidget::NativePaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry,
-                                        const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements, int32 LayerId,
+                                        const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements,
+                                        int32 LayerId,
                                         const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const
 {
 	FPaintContext Context(AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle, bParentEnabled);
@@ -76,13 +78,83 @@ int32 UInventoryGridWidget::NativePaint(const FPaintArgs& Args, const FGeometry&
 	{
 		UWidgetBlueprintLibrary::DrawLine(Context, Line.Start, Line.End, GridLineColor, true, 1.f);
 	}
-	
+
 	return Super::NativePaint(Args, AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle,
 	                          bParentEnabled);
+}
+
+bool UInventoryGridWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	UDragDropOperation* InOperation)
+{
+	if (UItemObject* ItemObject = Cast<UItemObject>(InOperation->Payload))
+	{
+		const int32 TopLeftIndex = InventoryComponent->TileToIndex(DraggedItemTopLeftTile);
+		// Try to add it back to the new position
+		if (!InventoryComponent->TryAddItemAtIndex(ItemObject, TopLeftIndex))
+		{
+			// Try place the item any where in the inventory
+			if (!InventoryComponent->TryAddItem(ItemObject))
+			{
+				// Place the item in the world if it cannot be placed in the inventory
+				if (AInventoryDemoGameState* GameState = GetWorld()->GetGameState<AInventoryDemoGameState>())
+				{
+					GameState->PlaceItemInWorld(ItemObject);
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+bool UInventoryGridWidget::NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	UDragDropOperation* InOperation)
+{
+	FVector2D MousePosition = InGeometry.AbsoluteToLocal(InDragDropEvent.GetScreenSpacePosition());
+	const FMousePositionInTile PositionInTile = MousePositionInTile(MousePosition);
+
+	if (const UItemObject* ItemObject = Cast<UItemObject>(InOperation->Payload))
+	{
+		FIntPoint ItemSize = ItemObject->GetSize();
+		if (PositionInTile.bIsRight)
+		{
+			if (ItemSize.X > 0)
+			{
+				ItemSize.X--;
+			}
+		}
+		if (PositionInTile.bIsDown)
+		{
+			if (ItemSize.Y > 0)
+			{
+				ItemSize.Y--;
+			}
+		}
+
+		const FVector2D CellPosition = MousePosition / TileSize - ItemSize / 2;
+		DraggedItemTopLeftTile = FIntPoint(FMath::FloorToInt(CellPosition.X), FMath::FloorToInt(CellPosition.Y));
+	}
+	
+	return true;
 }
 
 void UInventoryGridWidget::OnItemRemoved(UItemObject* RemovedItem)
 {
 	if (!IsValid(InventoryComponent)) return;
 	InventoryComponent->RemoveItem(RemovedItem);
+}
+
+FMousePositionInTile UInventoryGridWidget::MousePositionInTile(const FVector2D MousePosition)
+{
+	FMousePositionInTile MousePositionInTile;
+	if (fmod(MousePosition.X, TileSize) > TileSize / 2)
+	{
+		MousePositionInTile.bIsRight = true;
+	}
+	if (fmod(MousePosition.Y, TileSize) > TileSize / 2)
+	{
+		MousePositionInTile.bIsDown = true;
+	}
+	
+	return MousePositionInTile;
 }
