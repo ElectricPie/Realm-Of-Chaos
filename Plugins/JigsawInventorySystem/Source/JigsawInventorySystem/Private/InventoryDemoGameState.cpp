@@ -9,10 +9,8 @@
 
 void AInventoryDemoGameState::PlaceItemInWorld(UItemObject* ItemObject)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Placing item in world"));
 	if (!IsValid(ItemObject)) return;
 	
-	UE_LOG(LogTemp, Warning, TEXT("Placing valid item in world"));
 	AItemActor* NewItemActor = GetWorld()->SpawnActor<AItemActor>(ItemObject->GetItemClass(), FVector::ZeroVector, FRotator::ZeroRotator);
 	for (const auto& Location : ItemLocations)
 	{

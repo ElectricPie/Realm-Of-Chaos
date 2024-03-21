@@ -68,6 +68,18 @@ TMap<UItemObject*, FTile> UInventoryComponent::GetAllItems() const
 
 void UInventoryComponent::RemoveItem(UItemObject* ItemObject)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Removing item"));
+	if (!IsValid(ItemObject)) return;
+
+	for (int32 i = 0; i < Items.Num(); i++)
+	{
+		if (Items[i] == ItemObject)
+		{
+			Items[i] = nullptr;
+		}
+	}
+
+	bIsDirty = true;
 }
 
 // Called when the game starts
