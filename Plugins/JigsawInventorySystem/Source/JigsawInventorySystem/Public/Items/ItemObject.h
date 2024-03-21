@@ -21,8 +21,9 @@ public:
 	FIntPoint GetSize() const { return Size; }
 	UFUNCTION(BlueprintCallable, Category="Item")
 	UMaterialInterface* GetIcon() const;
-	
-	
+	UFUNCTION(BlueprintCallable, Category="Item")
+	TSubclassOf<AItemActor> GetItemClass() const { return ItemClass; }
+
 private:
 	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
 	FIntPoint Size = FIntPoint(1, 1);
