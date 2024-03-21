@@ -18,11 +18,15 @@ class JIGSAWINVENTORYSYSTEM_API UItemObject : public UObject
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Item")
-	FIntPoint GetSize() const { return Size; }
+	FIntPoint GetSize() const;
 	UFUNCTION(BlueprintCallable, Category="Item")
 	UMaterialInterface* GetIcon() const;
 	UFUNCTION(BlueprintCallable, Category="Item")
 	TSubclassOf<AItemActor> GetItemClass() const { return ItemClass; }
+	UFUNCTION(BlueprintCallable, Category="Item")
+	void Rotate();
+	UFUNCTION(BlueprintCallable, Category="Item")
+	void SetRotated(const bool bNewIsRotated) { bIsRotated = bNewIsRotated; }
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
@@ -33,4 +37,6 @@ private:
 	UMaterialInterface* IconRotated;
 	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true", ExposeOnSpawn))
 	TSubclassOf<AItemActor> ItemClass;
+	UPROPERTY(BlueprintReadOnly, Category="Item", meta=(AllowPrivateAccess="true"))
+	bool bIsRotated = false;
 };

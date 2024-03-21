@@ -90,14 +90,16 @@ int32 UInventoryGridWidget::NativePaint(const FPaintArgs& Args, const FGeometry&
 	// Draw the drop location box and colour
 	if (UWidgetBlueprintLibrary::IsDragDropping() && bDrawDropLocation)
 	{
-		if (const UItemObject* ItemObject = Cast<UItemObject>(UWidgetBlueprintLibrary::GetDragDroppingContent()->Payload))
+		if (const UItemObject* ItemObject = Cast<UItemObject>(
+			UWidgetBlueprintLibrary::GetDragDroppingContent()->Payload))
 		{
 			FLinearColor DropColor = CannotDropColor;
-			if (InventoryComponent->IsSpaceAvailable(ItemObject, InventoryComponent->TileToIndex(DraggedItemTopLeftTile)))
+			if (InventoryComponent->IsSpaceAvailable(
+				ItemObject, InventoryComponent->TileToIndex(DraggedItemTopLeftTile)))
 			{
 				DropColor = CanDropColor;
 			}
-			
+
 			if (IsValid(DropLocationBrush))
 			{
 				const FVector2D Position = FVector2D(DraggedItemTopLeftTile.X, DraggedItemTopLeftTile.Y) * TileSize;
@@ -106,12 +108,13 @@ int32 UInventoryGridWidget::NativePaint(const FPaintArgs& Args, const FGeometry&
 			}
 		}
 	}
-	
-	return Super::NativePaint(Args, AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle, bParentEnabled);
+
+	return Super::NativePaint(Args, AllottedGeometry, MyCullingRect, OutDrawElements, LayerId, InWidgetStyle,
+	                          bParentEnabled);
 }
 
 bool UInventoryGridWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-	UDragDropOperation* InOperation)
+                                        UDragDropOperation* InOperation)
 {
 	if (UItemObject* ItemObject = Cast<UItemObject>(InOperation->Payload))
 	{
@@ -135,7 +138,7 @@ bool UInventoryGridWidget::NativeOnDrop(const FGeometry& InGeometry, const FDrag
 }
 
 bool UInventoryGridWidget::NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-	UDragDropOperation* InOperation)
+                                            UDragDropOperation* InOperation)
 {
 	const FVector2D MousePosition = InGeometry.AbsoluteToLocal(InDragDropEvent.GetScreenSpacePosition());
 	const FMousePositionInTile PositionInTile = MousePositionInTile(MousePosition);
@@ -161,12 +164,12 @@ bool UInventoryGridWidget::NativeOnDragOver(const FGeometry& InGeometry, const F
 		const FVector2D CellPosition = MousePosition / TileSize - ItemSize / 2;
 		DraggedItemTopLeftTile = FIntPoint(FMath::FloorToInt(CellPosition.X), FMath::FloorToInt(CellPosition.Y));
 	}
-	
+
 	return true;
 }
 
 void UInventoryGridWidget::NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-	UDragDropOperation* InOperation)
+                                             UDragDropOperation* InOperation)
 {
 	Super::NativeOnDragEnter(InGeometry, InDragDropEvent, InOperation);
 
@@ -180,13 +183,31 @@ void UInventoryGridWidget::NativeOnDragLeave(const FDragDropEvent& InDragDropEve
 	bDrawDropLocation = false;
 }
 
+FReply UInventoryGridWidget::NativeOnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+{
+	if (InKeyEvent.GetKey() == EKeys::R)
+	{
+		const UDragDropOperation* Operation = UWidgetBlueprintLibrary::GetDragDroppingContent();
+		if (UItemObject* ItemObject = Cast<UItemObject>(Operation->Payload))
+		{
+			ItemObject->Rotate();
+			if (UItemWidget* ItemWidget = Cast<UItemWidget>(Operation->DefaultDragVisual))
+			{
+				ItemWidget->Refresh();
+			}
+		}
+	}
+
+	return FReply::Handled();
+}
+
 void UInventoryGridWidget::OnItemRemoved(UItemObject* RemovedItem)
 {
 	if (!IsValid(InventoryComponent)) return;
 	InventoryComponent->RemoveItem(RemovedItem);
 }
 
-FMousePositionInTile UInventoryGridWidget::MousePositionInTile(const FVector2D MousePosition)
+FMousePositionInTile UInventoryGridWidget::MousePositionInTile(const FVector2D MousePosition) const
 {
 	FMousePositionInTile MousePositionInTile;
 	if (fmod(MousePosition.X, TileSize) > TileSize / 2)
@@ -197,6 +218,6 @@ FMousePositionInTile UInventoryGridWidget::MousePositionInTile(const FVector2D M
 	{
 		MousePositionInTile.bIsDown = true;
 	}
-	
+
 	return MousePositionInTile;
 }
