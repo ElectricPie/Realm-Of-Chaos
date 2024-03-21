@@ -10,6 +10,7 @@ class UItemWidget;
 class UInventoryComponent;
 class USizeBox;
 class UCanvasPanel;
+class USlateBrushAsset;
 
 USTRUCT(BlueprintType)
 struct FLine
@@ -64,7 +65,8 @@ protected:
 
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual bool NativeOnDragOver(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
-
+	virtual void NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+	virtual void NativeOnDragLeave(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	USizeBox* GridSizeBox;
@@ -83,8 +85,16 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Item Drawing", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<UItemWidget> ItemWidgetClass;
-
+	
+	bool bDrawDropLocation = false;
 	FIntPoint DraggedItemTopLeftTile;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Drag and Drop", meta=(AllowPrivateAccess="true"))
+	USlateBrushAsset* DropLocationBrush;
+	UPROPERTY(BlueprintReadOnly, Category="Drag and Drop", meta=(AllowPrivateAccess="true"))
+	FLinearColor CanDropColor = FLinearColor(0.f, 1.f, 0.f, 0.5f);
+	UPROPERTY(BlueprintReadOnly, Category="Drag and Drop", meta=(AllowPrivateAccess="true"))
+	FLinearColor CannotDropColor = FLinearColor(1.f, 0.f, 0.f, 0.5f);
+
 	
 	UFUNCTION()
 	void OnItemRemoved(UItemObject* RemovedItem);
