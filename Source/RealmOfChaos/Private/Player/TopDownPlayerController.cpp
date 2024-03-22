@@ -43,9 +43,6 @@ void ATopDownPlayerController::BeginPlay()
 	{
 		InputSubsystem->AddMappingContext(MappingContext, 0);
 	}
-
-	// Setup extraction points hud update timer
-	GetWorldTimerManager().SetTimer(ExtractionPointsHudUpdateTimer, this, &ATopDownPlayerController::UpdateExtractionPointsUI, ExtractionPointsHudUpdateInterval, true);
 }
 
 void ATopDownPlayerController::Tick(float DeltaSeconds)
@@ -109,7 +106,6 @@ void ATopDownPlayerController::Move(const FInputActionValue& Value)
 	if (!PlayerCharacter) return;
 
 	const FVector2d Dir = Value.Get<FVector2d>();
-	// Use normal to prevent diagonal movement being faster
 	PlayerCharacter->Move(FVector(Dir.X, Dir.Y, 0.f).GetSafeNormal());
 }
 
@@ -128,38 +124,8 @@ void ATopDownPlayerController::RotateToTarget(FVector TargetLocation)
 
 void ATopDownPlayerController::OnRep_ExtractionPoints()
 {
-	bResetPointUi = true;
-}
-
-void ATopDownPlayerController::UpdateExtractionPointsUI()
-{
-	if (!IsLocalPlayerController()) return;
 	if (AExtractionPlayerHud* Hud = Cast<AExtractionPlayerHud>(GetHUD()))
 	{
-
-	   UExtractionPointListWidget* ExtractionPointListWidget = Hud->GetHud()->GetExtractionPointListWidget();
-	   if (!ExtractionPointListWidget) return;
-
-	   if (bResetPointUi)
-	   {
-		   ExtractionPointListWidget->ClearExtractionPoints();
-		   for (const auto& Point : ExtractionPoints)
-		   {
-			   const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()) * DistanceToExtractionPointModifier;
-			   ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()), DistanceToPoint);
-		   }
-		
-		   bResetPointUi = false;
-
-		   // Dont need to update the points if we just reset them
-		   return;
-	   }
-	
-	   // Update the extraction points list with the new distances
-	   for (int32 i = 0; i < ExtractionPoints.Num(); ++i)
-	   {
-		   const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation()) * DistanceToExtractionPointModifier;
-		   ExtractionPointListWidget->UpdateExtractionPoint(i, DistanceToPoint);
-	   }
+		Hud->ResetExtractionPoints();
 	}
 }

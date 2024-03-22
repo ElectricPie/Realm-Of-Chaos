@@ -22,5 +22,4 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Extraction", meta=(AllowPrivateAccess="true", BindWidget))
 	UExtractionPointListWidget* ExtractionPointListWidget;
-	
 };

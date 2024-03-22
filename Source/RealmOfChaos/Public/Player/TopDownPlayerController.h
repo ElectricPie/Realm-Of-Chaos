@@ -43,23 +43,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
 	float ExtractionPointsHudUpdateInterval = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="True", ClampMin="0.0", UIMin="0.0",
-		ToolTip="The distance to the extraction point is multiplied by this value"))
+	ToolTip="The distance to the extraction point is multiplied by this value"))
 	float DistanceToExtractionPointModifier = 0.01f;
 	
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter;
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_ExtractionPoints)
 	TArray<const AExtractionPoint*> ExtractionPoints;
-
-	
-	bool bResetPointUi;
-	FTimerHandle ExtractionPointsHudUpdateTimer;
 	
 	void Move(const FInputActionValue& Value);
 	void RotateToTarget(FVector TargetLocation);
 
 	UFUNCTION()
 	void OnRep_ExtractionPoints();
-	
-	void UpdateExtractionPointsUI();
 };
