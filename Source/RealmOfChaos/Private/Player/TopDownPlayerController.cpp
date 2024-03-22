@@ -8,7 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/PlayerCharacter.h"
 #include "Extraction/ExtractionPoint.h"
-#include "Ui/ExtractionPlayerHud.h"
+#include "Ui/ExtractionPlayerHudWidget.h"
 #include "Ui/ExtractionPointListWidget.h"
 
 
@@ -46,7 +46,7 @@ void ATopDownPlayerController::BeginPlay()
 	// Setup Ui
 	if (ExtractionHudClass)
 	{
-		Hud = CreateWidget<UExtractionPlayerHud>(this, ExtractionHudClass);
+		Hud = CreateWidget<UExtractionPlayerHudWidget>(this, ExtractionHudClass);
 		Hud->AddToViewport();
 	}
 	else

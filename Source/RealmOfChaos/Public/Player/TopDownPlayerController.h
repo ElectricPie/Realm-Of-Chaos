@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TopDownPlayerController.generated.h"
 
-class UExtractionPlayerHud;
+class UExtractionPlayerHudWidget;
 class AExtractionPoint;
 class UInputAction;
 class APlayerCharacter;
@@ -42,9 +42,9 @@ private:
 	float RaycastLimit = 3000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<UExtractionPlayerHud> ExtractionHudClass;
+	TSubclassOf<UExtractionPlayerHudWidget> ExtractionHudClass;
 	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
-	UExtractionPlayerHud* Hud;
+	UExtractionPlayerHudWidget* Hud;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
 	float ExtractionPointsHudUpdateInterval = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="True", ClampMin="0.0", UIMin="0.0",

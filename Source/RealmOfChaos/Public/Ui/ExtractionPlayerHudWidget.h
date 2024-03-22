@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ExtractionPlayerHud.generated.h"
+#include "ExtractionPlayerHudWidget.generated.h"
 
 class UExtractionPointListWidget;
 
@@ -12,7 +12,7 @@ class UExtractionPointListWidget;
  * 
  */
 UCLASS()
-class REALMOFCHAOS_API UExtractionPlayerHud : public UUserWidget
+class REALMOFCHAOS_API UExtractionPlayerHudWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
