@@ -11,7 +11,7 @@ class UExtractionPointListWidget;
 /**
  * 
  */
-UCLASS()
+UCLASS(HideDropdown)
 class REALMOFCHAOS_API UExtractionPlayerHudWidget : public UUserWidget
 {
 	GENERATED_BODY()

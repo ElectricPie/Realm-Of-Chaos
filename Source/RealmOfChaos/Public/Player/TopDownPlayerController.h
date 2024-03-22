@@ -40,11 +40,6 @@ private:
 	UInputAction* MoveAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	float RaycastLimit = 3000.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<UExtractionPlayerHudWidget> ExtractionHudClass;
-	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
-	UExtractionPlayerHudWidget* Hud;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
 	float ExtractionPointsHudUpdateInterval = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="True", ClampMin="0.0", UIMin="0.0",

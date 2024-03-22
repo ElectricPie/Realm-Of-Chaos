@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/PlayerCharacter.h"
 #include "Extraction/ExtractionPoint.h"
+#include "Ui/ExtractionPlayerHud.h"
 #include "Ui/ExtractionPlayerHudWidget.h"
 #include "Ui/ExtractionPointListWidget.h"
 
@@ -41,17 +42,6 @@ void ATopDownPlayerController::BeginPlay()
 		UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		InputSubsystem->AddMappingContext(MappingContext, 0);
-	}
-
-	// Setup Ui
-	if (ExtractionHudClass)
-	{
-		Hud = CreateWidget<UExtractionPlayerHudWidget>(this, ExtractionHudClass);
-		Hud->AddToViewport();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("ExtractionHudClass is not set in %s"), *GetName());
 	}
 
 	// Setup extraction points hud update timer
@@ -143,30 +133,33 @@ void ATopDownPlayerController::OnRep_ExtractionPoints()
 
 void ATopDownPlayerController::UpdateExtractionPointsUI()
 {
-	if (!IsLocalPlayerController() && !Hud) return;
-
-	UExtractionPointListWidget* ExtractionPointListWidget = Hud->GetExtractionPointListWidget();
-	if (!ExtractionPointListWidget) return;
-
-	if (bResetPointUi)
+	if (!IsLocalPlayerController()) return;
+	if (AExtractionPlayerHud* Hud = Cast<AExtractionPlayerHud>(GetHUD()))
 	{
-		ExtractionPointListWidget->ClearExtractionPoints();
-		for (const auto& Point : ExtractionPoints)
-		{
-			const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()) * DistanceToExtractionPointModifier;
-			ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()), DistanceToPoint);
-		}
+
+	   UExtractionPointListWidget* ExtractionPointListWidget = Hud->GetHud()->GetExtractionPointListWidget();
+	   if (!ExtractionPointListWidget) return;
+
+	   if (bResetPointUi)
+	   {
+		   ExtractionPointListWidget->ClearExtractionPoints();
+		   for (const auto& Point : ExtractionPoints)
+		   {
+			   const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), Point->GetActorLocation()) * DistanceToExtractionPointModifier;
+			   ExtractionPointListWidget->AddExtractionPoint(FText::FromName(Point->GetPointName()), DistanceToPoint);
+		   }
 		
-		bResetPointUi = false;
+		   bResetPointUi = false;
 
-		// Dont need to update the points if we just reset them
-		return;
-	}
+		   // Dont need to update the points if we just reset them
+		   return;
+	   }
 	
-	// Update the extraction points list with the new distances
-	for (int32 i = 0; i < ExtractionPoints.Num(); ++i)
-	{
-		const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation()) * DistanceToExtractionPointModifier;
-		ExtractionPointListWidget->UpdateExtractionPoint(i, DistanceToPoint);
+	   // Update the extraction points list with the new distances
+	   for (int32 i = 0; i < ExtractionPoints.Num(); ++i)
+	   {
+		   const float DistanceToPoint = FVector::Dist(PlayerCharacter->GetActorLocation(), ExtractionPoints[i]->GetActorLocation()) * DistanceToExtractionPointModifier;
+		   ExtractionPointListWidget->UpdateExtractionPoint(i, DistanceToPoint);
+	   }
 	}
 }
