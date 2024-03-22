@@ -5,6 +5,7 @@
 
 #include "Extraction/ExtractionPoint.h"
 #include "Player/TopDownPlayerController.h"
+#include "Ui/ExtractionInventoryWidget.h"
 #include "Ui/ExtractionPlayerHudWidget.h"
 #include "Ui/ExtractionPointListWidget.h"
 
@@ -17,15 +18,25 @@ void AExtractionPlayerHud::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Setup Ui
-	if (ExtractionHudClass)
+	if (ExtractionHudWidgetClass)
 	{
-		Hud = CreateWidget<UExtractionPlayerHudWidget>(GetOwningPlayerController(), ExtractionHudClass);
-		Hud->AddToViewport();
+		HudWidget = CreateWidget<UExtractionPlayerHudWidget>(GetOwningPlayerController(), ExtractionHudWidgetClass);
+		HudWidget->AddToViewport();
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("ExtractionHudClass is not set in %s"), *GetName());
+	}
+
+	if (IsValid(InventoryWidgetClass))
+	{
+		InventoryWidget = CreateWidget<UExtractionInventoryWidget>(GetOwningPlayerController(), InventoryWidgetClass);
+		InventoryWidget->AddToViewport();
+		InventoryWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("InventoryWidgetClass is not set in %s"), *GetName());
 	}
 
 	// Setup extraction points hud update timer
@@ -34,7 +45,7 @@ void AExtractionPlayerHud::BeginPlay()
 
 void AExtractionPlayerHud::UpdateExtractionPointsDistance()
 {
-	if (UExtractionPointListWidget* ExtractionPointListWidget = Hud->GetExtractionPointListWidget())
+	if (UExtractionPointListWidget* ExtractionPointListWidget = HudWidget->GetExtractionPointListWidget())
 	{
 		if (const ATopDownPlayerController* PlayerController = Cast<ATopDownPlayerController>(GetOwningPlayerController()))
 		{
