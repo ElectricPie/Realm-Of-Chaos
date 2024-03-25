@@ -39,6 +39,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
+	UInputAction* ToggleInventoryAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	float RaycastLimit = 3000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
 	float ExtractionPointsHudUpdateInterval = 1.f;
@@ -53,6 +55,7 @@ private:
 	
 	void Move(const FInputActionValue& Value);
 	void RotateToTarget(FVector TargetLocation);
+	void ToggleInventory(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void OnRep_ExtractionPoints();

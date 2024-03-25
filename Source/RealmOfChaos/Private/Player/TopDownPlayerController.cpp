@@ -90,6 +90,7 @@ void ATopDownPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::Move);
+		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::ToggleInventory);
 	}
 }
 
@@ -119,6 +120,14 @@ void ATopDownPlayerController::RotateToTarget(FVector TargetLocation)
 		Direction.Z = 0.f;
 
 		ClientSetRotation(Direction.Rotation());
+	}
+}
+
+void ATopDownPlayerController::ToggleInventory(const FInputActionValue& Value)
+{
+	if (AExtractionPlayerHud* Hud = Cast<AExtractionPlayerHud>(GetHUD()))
+	{
+		Hud->ToggleInventory();
 	}
 }
 

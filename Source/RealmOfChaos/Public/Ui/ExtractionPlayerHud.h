@@ -9,17 +9,11 @@
 class UExtractionInventoryWidget;
 class UExtractionPlayerHudWidget;
 
-USTRUCT(BlueprintType)
-struct FExtractionPointLocation
-{
-	GENERATED_BODY()
-
-	FExtractionPointLocation() = default;
-	FExtractionPointLocation(FName InName, FVector InLocation)
-		: Name(InName), Location(InLocation) {}
-	
-	FName Name;
-	FVector Location;
+UENUM(BlueprintType)
+enum EActiveWidget
+{	
+	Hud,
+	Inventory
 };
 
 /**
@@ -31,6 +25,9 @@ class REALMOFCHAOS_API AExtractionPlayerHud : public AHUD
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void ToggleInventory();
+	
 	UFUNCTION(BlueprintCallable, Category="Extraction Points")
 	void ResetExtractionPoints();
 	UFUNCTION(BLueprintCallable)
@@ -55,9 +52,12 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UExtractionInventoryWidget* InventoryWidget;
 
+	EActiveWidget ActiveWidget = EActiveWidget::Hud;
 	bool bResetExtractionPoints = true;
 	FTimerHandle ExtractionPointsHudUpdateTimer;
 	
 	UFUNCTION()
 	void UpdateExtractionPointsDistance();
+
+	void HideAllWidgets() const;
 };
