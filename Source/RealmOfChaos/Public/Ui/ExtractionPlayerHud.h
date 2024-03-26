@@ -35,6 +35,12 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	/**
+	 * @brief Is called after DelayedPlayTimer seconds to allow for widgets to finish initializing
+	 */
+	UFUNCTION()
+	virtual void DelayedOnPlay();
+	virtual void Tick(float DeltaSeconds) override;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Extraction Points", meta=(AllowPrivateAccess = "true"))
@@ -60,4 +66,6 @@ private:
 	void UpdateExtractionPointsDistance();
 
 	void HideAllWidgets() const;
+
+	float DelayedPlayTimer = 0.1f;
 };

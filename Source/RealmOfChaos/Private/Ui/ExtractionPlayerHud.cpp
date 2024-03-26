@@ -4,6 +4,7 @@
 #include "Ui/ExtractionPlayerHud.h"
 
 #include "Extraction/ExtractionPoint.h"
+#include "Player/PlayerCharacter.h"
 #include "Player/TopDownPlayerController.h"
 #include "Ui/ExtractionInventoryWidget.h"
 #include "Ui/ExtractionPlayerHudWidget.h"
@@ -46,9 +47,9 @@ void AExtractionPlayerHud::BeginPlay()
 
 	if (IsValid(InventoryWidgetClass))
 	{
+		// Can't set the visibility here as the inventory needs to be active for the grid to get a size
 		InventoryWidget = CreateWidget<UExtractionInventoryWidget>(GetOwningPlayerController(), InventoryWidgetClass);
 		InventoryWidget->AddToViewport();
-		InventoryWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	else
 	{
@@ -59,6 +60,32 @@ void AExtractionPlayerHud::BeginPlay()
 	GetWorldTimerManager().SetTimer(ExtractionPointsHudUpdateTimer, this,
 	                                &AExtractionPlayerHud::UpdateExtractionPointsDistance,
 	                                ExtractionPointsHudUpdateInterval, true);
+
+	// Delay to give the inventory widget to have a size
+	FTimerHandle DelayedPlayTimerHandle;
+	GetWorldTimerManager().SetTimer(DelayedPlayTimerHandle, this, &AExtractionPlayerHud::DelayedOnPlay, DelayedPlayTimer, false);
+}
+
+void AExtractionPlayerHud::DelayedOnPlay()
+{
+	// Needed as the inventory widget can't its size until after it has been active
+	if (IsValid(InventoryWidget))
+	{
+		if (const APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwningPawn()))
+		{
+			if (UInventoryComponent* InventoryComponent = PlayerCharacter->GetInventoryComponent())
+			{
+				InventoryWidget->SetupInventoryGridWidget(InventoryComponent);
+				InventoryWidget->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+	}
+}
+
+void AExtractionPlayerHud::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
 }
 
 void AExtractionPlayerHud::UpdateExtractionPointsDistance()

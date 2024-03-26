@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsMovingForward() const;
 
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
