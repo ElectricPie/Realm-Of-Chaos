@@ -4,6 +4,7 @@
 #include "Player/PlayerCharacter.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/InventoryComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -23,6 +24,8 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory Component"));
 }
 
 // Called when the game starts or when spawned

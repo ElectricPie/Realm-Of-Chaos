@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UInventoryComponent;
 
 UCLASS()
 class REALMOFCHAOS_API APlayerCharacter : public ACharacter
@@ -48,4 +49,7 @@ private:
 	float BackwardsThreshold = -0.5f;
 
 	TArray<int32> ActiveExtractionPoints;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UInventoryComponent* InventoryComponent;
 };
