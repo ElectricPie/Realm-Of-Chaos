@@ -5,7 +5,9 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/InventoryComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Items/ItemActor.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -25,6 +27,10 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
 
+	GroundItemsDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Ground Items Detection Sphere"));
+	GroundItemsDetectionSphere->SetupAttachment(RootComponent);
+	GroundItemsDetectionSphere->SetSphereRadius(400.f);
+	
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory Component"));
 }
 
@@ -46,6 +52,27 @@ void APlayerCharacter::Tick(float DeltaTime)
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (AItemActor* Item = Cast<AItemActor>(OtherActor))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Item %s is nearby"), *OtherActor->GetName());
+		NearbyItems.Add(Item);
+	}
+}
+
+void APlayerCharacter::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+
+	if (AItemActor* Item = Cast<AItemActor>(OtherActor))
+	{
+		NearbyItems.Remove(Item);
+	}
 }
 
 

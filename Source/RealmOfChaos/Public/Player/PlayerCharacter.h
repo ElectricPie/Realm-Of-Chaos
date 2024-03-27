@@ -6,9 +6,11 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInventoryComponent;
+class AItemActor;
 
 UCLASS()
 class REALMOFCHAOS_API APlayerCharacter : public ACharacter
@@ -38,6 +40,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	USpringArmComponent* SpringArm;
@@ -55,4 +60,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UInventoryComponent* InventoryComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	USphereComponent* GroundItemsDetectionSphere;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<AItemActor*> NearbyItems;
 };
