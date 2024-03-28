@@ -12,6 +12,8 @@ class UCameraComponent;
 class UInventoryComponent;
 class AItemActor;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemNearbySignature, TArray<AItemActor*>, NearbyItems);
+
 UCLASS()
 class REALMOFCHAOS_API APlayerCharacter : public ACharacter
 {
@@ -20,6 +22,9 @@ class REALMOFCHAOS_API APlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
+	
+	UPROPERTY(BlueprintReadWrite)
+	FOnItemNearbySignature OnItemNearbyEvent;
 	
 	void Move(FVector Direction);
 

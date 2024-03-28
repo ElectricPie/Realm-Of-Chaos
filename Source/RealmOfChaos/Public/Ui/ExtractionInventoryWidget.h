@@ -6,9 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "ExtractionInventoryWidget.generated.h"
 
+class UGroundItemsWidget;
 class UOverlay;
 class USizeBox;
 class UCanvasPanel;
+class APlayerCharacter;
 class UInventoryComponent;
 class UInventoryGridWidget;
 
@@ -23,19 +25,23 @@ class REALMOFCHAOS_API UExtractionInventoryWidget : public UUserWidget
 public:
 	/**
 	 * @brief This sets up the grid to fit inside its overlay slot so needs to be called a short time after beguin play
-	 * @param NewInventoryComponent The inventory component to use for the grid
+	 * @param PlayerCharacter The inventory component to use for the grid
 	 */
-	void SetupInventoryGridWidget(UInventoryComponent* NewInventoryComponent);
+	void InitializeInventoryWidget(APlayerCharacter* PlayerCharacter);
 
 private:
-	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", BindWidget))
+	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UCanvasPanel* InventoryCanvas;
-	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", BindWidget))
+	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UOverlay* InventoryGridOverlay;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", BindWidget))
+	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UInventoryGridWidget* InventoryGridWidget;
+	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
+	UGroundItemsWidget* GroundItemsWidget;
 	UPROPERTY()
 	UInventoryComponent* InventoryComponent;
-
+	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	float TileSize = 50.f;
+	
 	void SetGridTileSize();
 };

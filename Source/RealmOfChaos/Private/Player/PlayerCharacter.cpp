@@ -30,6 +30,7 @@ APlayerCharacter::APlayerCharacter()
 	GroundItemsDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Ground Items Detection Sphere"));
 	GroundItemsDetectionSphere->SetupAttachment(RootComponent);
 	GroundItemsDetectionSphere->SetSphereRadius(400.f);
+	GroundItemsDetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory Component"));
 }
@@ -38,7 +39,11 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (HasAuthority())
+	{
+		GroundItemsDetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
 }
 
 // Called every frame
@@ -60,18 +65,19 @@ void APlayerCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (AItemActor* Item = Cast<AItemActor>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Item %s is nearby"), *OtherActor->GetName());
 		NearbyItems.Add(Item);
+		OnItemNearbyEvent.Broadcast(NearbyItems);
 	}
 }
 
 void APlayerCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
-
+	
 	if (AItemActor* Item = Cast<AItemActor>(OtherActor))
 	{
 		NearbyItems.Remove(Item);
+		OnItemNearbyEvent.Broadcast(NearbyItems);
 	}
 }
 

@@ -71,14 +71,12 @@ void AExtractionPlayerHud::DelayedOnPlay()
 	// Needed as the inventory widget can't its size until after it has been active
 	if (IsValid(InventoryWidget))
 	{
-		if (const APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwningPawn()))
+		if (APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwningPawn()))
 		{
-			if (UInventoryComponent* InventoryComponent = PlayerCharacter->GetInventoryComponent())
-			{
-				InventoryWidget->SetupInventoryGridWidget(InventoryComponent);
-				InventoryWidget->SetVisibility(ESlateVisibility::Collapsed);
-			}
+			InventoryWidget->InitializeInventoryWidget(PlayerCharacter);
 		}
+
+		InventoryWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
