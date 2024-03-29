@@ -1,9 +1,12 @@
-// ifll out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Ui/GroundItemsWidget.h"
 
+#include "Components/VerticalBox.h"
+#include "Items/ItemActor.h"
 #include "Player/PlayerCharacter.h"
+#include "Widgets/ItemWidget.h"
 
 void UGroundItemsWidget::Initialize(APlayerCharacter* PlayerCharacter, float NewTileSize)
 {
@@ -13,5 +16,16 @@ void UGroundItemsWidget::Initialize(APlayerCharacter* PlayerCharacter, float New
 
 void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Item nearby"));
+	if (!IsValid(ItemListBox) || !IsValid(ItemWidgetClass)) return;
+	ItemListBox->ClearChildren();
+
+	for (const auto& Item : NearbyItems)
+	{
+		if (IsValid(Item))
+		{
+			UItemWidget* ItemWidget = CreateWidget<UItemWidget>(GetWorld(), ItemWidgetClass);
+			ItemWidget->InitializeItem(Item->GetItemObject(), TileSize);
+			ItemListBox->AddChild(ItemWidget);
+		}
+	}
 }

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "GroundItemsWidget.generated.h"
 
+class UVerticalBox;
+class UItemWidget;
 class APlayerCharacter;
 /**
  * 
@@ -17,8 +19,13 @@ class REALMOFCHAOS_API UGroundItemsWidget : public UUserWidget
 
 public:
 	void Initialize(APlayerCharacter* NewPlayerCharacter, float NewTileSize);
-	
+
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true"))
+	TSubclassOf<UItemWidget> ItemWidgetClass;
+	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
+	UVerticalBox* ItemListBox;
+	
 	float TileSize = 50.f;
 	
 	UFUNCTION()

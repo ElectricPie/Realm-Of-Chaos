@@ -10,11 +10,11 @@
 #include "Components/SizeBox.h"
 #include "Items/ItemObject.h"
 
-void UItemWidget::InitializeItem(UItemObject* NewItem, float NewTileSize)
+void UItemWidget::InitializeItem(UItemObject* NewItem, const float NewTileSize)
 {
 	ItemObject = NewItem;
 	TileSize = NewTileSize;
-	
+
 	Refresh();
 }
 

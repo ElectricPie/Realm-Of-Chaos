@@ -18,7 +18,7 @@ public:
 	AItemActor();
 
 	UFUNCTION(BlueprintCallable, Category="Item")
-	const UItemObject* GetItemObject() const { return ItemObject; }
+	UItemObject* GetItemObject() const { return ItemObject; }
 	
 protected:
 	// Called when the game starts or when spawned
