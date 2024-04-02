@@ -3,7 +3,8 @@
 
 #include "Ui/GroundItemsWidget.h"
 
-#include "Components/VerticalBox.h"
+#include "Components/ScrollBox.h"
+#include "Components/ScrollBoxSlot.h"
 #include "Items/ItemActor.h"
 #include "Player/PlayerCharacter.h"
 #include "Widgets/ItemWidget.h"
@@ -14,10 +15,15 @@ void UGroundItemsWidget::Initialize(APlayerCharacter* PlayerCharacter, float New
 	PlayerCharacter->OnItemNearbyEvent.AddDynamic(this, &UGroundItemsWidget::OnItemNearby);
 }
 
+void UGroundItemsWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+}
+
 void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 {
-	if (!IsValid(ItemListBox) || !IsValid(ItemWidgetClass)) return;
-	ItemListBox->ClearChildren();
+	if (!IsValid(ItemScrollBox) || !IsValid(ItemWidgetClass)) return;
+	ItemScrollBox->ClearChildren();
 
 	for (const auto& Item : NearbyItems)
 	{
@@ -25,7 +31,12 @@ void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 		{
 			UItemWidget* ItemWidget = CreateWidget<UItemWidget>(GetWorld(), ItemWidgetClass);
 			ItemWidget->InitializeItem(Item->GetItemObject(), TileSize);
-			ItemListBox->AddChild(ItemWidget);
+			ItemScrollBox->AddChild(ItemWidget);
+			if (UScrollBoxSlot* ScrollSlot = Cast<UScrollBoxSlot>(ItemWidget->Slot))
+			{
+				ScrollSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Left);
+				ScrollSlot->SetPadding(FMargin(ItemSlotMargin));
+			}
 		}
 	}
 }

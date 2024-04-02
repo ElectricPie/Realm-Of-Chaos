@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/SizeBox.h"
 #include "ItemWidget.generated.h"
 
 class UItemObject;
@@ -31,6 +32,7 @@ public:
 	void InitializeItem(UItemObject* NewItem, float NewTileSize);
 	UFUNCTION(BlueprintCallable, Category="Item Widget")
 	void Refresh();
+	FVector2d GetWidgetSize() const { return FVector2d(BackgroundSizeBox->GetWidthOverride(), BackgroundSizeBox->GetHeightOverride()); };
 
 protected:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

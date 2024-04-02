@@ -25,7 +25,7 @@ void UExtractionInventoryWidget::SetGridTileSize()
 {
 	if (!IsValid(InventoryComponent) || !IsValid(InventoryGridWidget)) return;
 
-	FVector2d GridSize = InventoryGridWidget->GetCachedGeometry().GetLocalSize();
+	const FVector2d GridSize = InventoryGridWidget->GetCachedGeometry().GetLocalSize();
 	// float TileSize = GridSize.X / InventoryComponent->GetColumns();
 	TileSize = GridSize.Y / InventoryComponent->GetRows();
 	InventoryGridWidget->InitializeGrid(InventoryComponent, TileSize);

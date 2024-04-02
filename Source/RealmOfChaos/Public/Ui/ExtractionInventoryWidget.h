@@ -33,8 +33,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UCanvasPanel* InventoryCanvas;
 	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
-	UOverlay* InventoryGridOverlay;
-	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UInventoryGridWidget* InventoryGridWidget;
 	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
 	UGroundItemsWidget* GroundItemsWidget;

@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GroundItemsWidget.generated.h"
 
-class UVerticalBox;
+class UScrollBox;
 class UItemWidget;
 class APlayerCharacter;
 /**
@@ -20,11 +20,16 @@ class REALMOFCHAOS_API UGroundItemsWidget : public UUserWidget
 public:
 	void Initialize(APlayerCharacter* NewPlayerCharacter, float NewTileSize);
 
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<UItemWidget> ItemWidgetClass;
 	UPROPERTY(BlueprintReadOnly, Category="Widgets", meta=(AllowPrivateAccess="true", BindWidget))
-	UVerticalBox* ItemListBox;
+	UScrollBox* ItemScrollBox;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Items", meta=(AllowPrivateAccess))
+	float ItemSlotMargin = 10.f;
 	
 	float TileSize = 50.f;
 	
