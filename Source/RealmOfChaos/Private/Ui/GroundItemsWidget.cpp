@@ -15,11 +15,6 @@ void UGroundItemsWidget::Initialize(APlayerCharacter* PlayerCharacter, float New
 	PlayerCharacter->OnItemNearbyEvent.AddDynamic(this, &UGroundItemsWidget::OnItemNearby);
 }
 
-void UGroundItemsWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-	Super::NativeTick(MyGeometry, InDeltaTime);
-}
-
 void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 {
 	if (!IsValid(ItemScrollBox) || !IsValid(ItemWidgetClass)) return;
@@ -30,8 +25,12 @@ void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 		if (IsValid(Item))
 		{
 			UItemWidget* ItemWidget = CreateWidget<UItemWidget>(GetWorld(), ItemWidgetClass);
+			ItemWidget->OnRemovedEvent.AddDynamic(this, &UGroundItemsWidget::OnItemWidgetRemoved);
 			ItemWidget->InitializeItem(Item->GetItemObject(), TileSize);
 			ItemScrollBox->AddChild(ItemWidget);
+
+			ItemWidgets.Add(Item->GetItemObject(), Item);
+			
 			if (UScrollBoxSlot* ScrollSlot = Cast<UScrollBoxSlot>(ItemWidget->Slot))
 			{
 				ScrollSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Left);
@@ -40,3 +39,13 @@ void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 		}
 	}
 }
+
+void UGroundItemsWidget::OnItemWidgetRemoved(UItemObject* ItemObject)
+{
+	if (AItemActor* ItemActor = ItemWidgets.FindAndRemoveChecked(ItemObject))
+	{
+		ItemActor->Destroy();
+	}
+}
+
+

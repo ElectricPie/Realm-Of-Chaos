@@ -40,6 +40,6 @@ private:
 	UInventoryComponent* InventoryComponent;
 	UPROPERTY(BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	float TileSize = 50.f;
-	
+
 	void SetGridTileSize();
 };
