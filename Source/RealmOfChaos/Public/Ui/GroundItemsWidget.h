@@ -39,5 +39,7 @@ private:
 	void OnItemNearby(TArray<AItemActor*> NearbyItems);
 
 	UFUNCTION()
+	void AddItemWidgetToList(UItemWidget* ItemWidget);
+	UFUNCTION()
 	void OnItemWidgetRemoved(UItemObject* ItemObject);
 };

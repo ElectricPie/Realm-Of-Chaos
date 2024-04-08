@@ -25,18 +25,25 @@ void UGroundItemsWidget::OnItemNearby(TArray<AItemActor*> NearbyItems)
 		if (IsValid(Item))
 		{
 			UItemWidget* ItemWidget = CreateWidget<UItemWidget>(GetWorld(), ItemWidgetClass);
-			ItemWidget->OnRemovedEvent.AddDynamic(this, &UGroundItemsWidget::OnItemWidgetRemoved);
 			ItemWidget->InitializeItem(Item->GetItemObject(), TileSize);
-			ItemScrollBox->AddChild(ItemWidget);
+			//ItemWidget->OnRemovedEvent.AddDynamic(this, &UGroundItemsWidget::OnItemWidgetRemoved);
+			ItemWidget->OnDragCanceledEvent.AddDynamic(this, &UGroundItemsWidget::AddItemWidgetToList);
 
 			ItemWidgets.Add(Item->GetItemObject(), Item);
 			
-			if (UScrollBoxSlot* ScrollSlot = Cast<UScrollBoxSlot>(ItemWidget->Slot))
-			{
-				ScrollSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Left);
-				ScrollSlot->SetPadding(FMargin(ItemSlotMargin));
-			}
+			AddItemWidgetToList(ItemWidget);
 		}
+	}
+}
+
+void UGroundItemsWidget::AddItemWidgetToList(UItemWidget* ItemWidget)
+{
+	ItemScrollBox->AddChild(ItemWidget);
+
+	if (UScrollBoxSlot* ScrollSlot = Cast<UScrollBoxSlot>(ItemWidget->Slot))
+	{
+		ScrollSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Left);
+		ScrollSlot->SetPadding(FMargin(ItemSlotMargin));
 	}
 }
 
@@ -47,5 +54,3 @@ void UGroundItemsWidget::OnItemWidgetRemoved(UItemObject* ItemObject)
 		ItemActor->Destroy();
 	}
 }
-
-

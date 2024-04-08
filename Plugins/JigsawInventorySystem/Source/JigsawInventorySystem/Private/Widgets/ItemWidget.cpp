@@ -61,3 +61,10 @@ void UItemWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 	OnRemovedEvent.Broadcast(ItemObject);
 	RemoveFromParent();
 }
+
+void UItemWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+{
+	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
+
+	OnDragCanceledEvent.Broadcast(this);
+}
